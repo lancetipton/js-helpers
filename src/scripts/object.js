@@ -4,6 +4,7 @@
 
 import { logData } from './log'
 import { isFunc } from './method'
+import { deepClone } from './collection'
 import { sanitize, isStr } from './string'
 import { isArr } from './array'
 import { strToType } from './ext'
