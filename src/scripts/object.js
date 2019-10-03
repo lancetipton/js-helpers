@@ -158,11 +158,11 @@ export const deepMerge = (...sources) => {
 export const applyToCloneOf = (obj, mutatorCb) => {
   if (!obj) 
     throw new Error('Obj argument in applyToCloneOf must be defined')
-  if (typeof obj !== 'object')
+  if (!isObj(obj))
     throw new Error('Obj argument in applyToCloneOf must be an object')
   if (!mutatorCb)
     throw new Error('mutator function in applyToCloneOf must be defined')
-  if (typeof mutatorCb !== 'function')
+  if (!isFunc(mutatorCb)) 
     throw new Error('mutatorFunc arg in applyToCloneOf must be a function')
 
   const clone = deepClone(obj)
