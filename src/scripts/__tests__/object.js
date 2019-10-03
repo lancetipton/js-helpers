@@ -309,6 +309,20 @@ describe('/object', () => {
       expect(() => Obj.applyToCloneOf({}, "I am not a function")).toThrow(Error)
     })
 
+    it('should work with delete', () => {
+      const orig = Object.freeze({
+        a: 1,        
+        b: 2
+      })
+
+      const updated = Obj.applyToCloneOf(orig, clone => {
+        delete clone['a']
+      })
+
+      expect(updated.a).toEqual(undefined)
+      expect(orig.a).toEqual(1)
+    })
+
   })
 
 })
