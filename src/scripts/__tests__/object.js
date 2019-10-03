@@ -302,16 +302,45 @@ describe('/object', () => {
       expect(result.b).toEqual(2)
     })
 
-    it('should throw errors on bad input', () => {
-      expect(() => Obj.applyToCloneOf(null, () => {})).toThrow(Error)
-      expect(() => Obj.applyToCloneOf(1, () => {})).toThrow(Error)
-      expect(() => Obj.applyToCloneOf({}, null)).toThrow(Error)
-      expect(() => Obj.applyToCloneOf({}, "I am not a function")).toThrow(Error)
+    it('should call console.warn on bad input', () => {
+      const orgWarn = console.warn
+      console.warn = jest.fn()
+
+      Obj.applyToCloneOf(null, () => {})
+      expect(console.warn).toHaveBeenCalled()
+      console.warn.mockClear()
+      
+      Obj.applyToCloneOf(1, () => {})
+      expect(console.warn).toHaveBeenCalled()
+      console.warn.mockClear()
+      
+      Obj.applyToCloneOf({}, null)
+      expect(console.warn).toHaveBeenCalled()
+      console.warn.mockClear()
+      
+      Obj.applyToCloneOf({}, "I am not a function")
+      expect(console.warn).toHaveBeenCalled()
+      console.warn.mockClear()
+
+      console.warn = orgWarn
+    })
+
+    it('should return the original object when on bad input', () => {
+      const orgWarn = console.warn
+      console.warn = jest.fn()
+      
+      const original = {}
+      const notClone = Obj.applyToCloneOf(original, null)
+      
+      expect(console.warn).toHaveBeenCalled()
+      expect(notClone === original).toEqual(true)
+
+      console.warn = orgWarn
     })
 
     it('should work with delete', () => {
       const orig = Object.freeze({
-        a: 1,        
+        a: 1,
         b: 2
       })
 
