@@ -285,4 +285,30 @@ describe('/object', () => {
 
   })
 
+  describe('applyToCloneOf', () => {
+
+    it('should return a clone with the changes, leaving the original object unchanged', () => {
+      const orig = Object.freeze({
+        a: 1,
+        b: 2
+      })
+
+      const result = Obj.applyToCloneOf(orig, (clone) => {
+        clone.a = 42
+      })
+
+      expect(orig.a).toEqual(1)
+      expect(result.a).toEqual(42)
+      expect(result.b).toEqual(2)
+    })
+
+    it('should throw errors on bad input', () => {
+      expect(() => Obj.applyToCloneOf(null, () => {})).toThrow(Error)
+      expect(() => Obj.applyToCloneOf(1, () => {})).toThrow(Error)
+      expect(() => Obj.applyToCloneOf({}, null)).toThrow(Error)
+      expect(() => Obj.applyToCloneOf({}, "I am not a function")).toThrow(Error)
+    })
+
+  })
+
 })

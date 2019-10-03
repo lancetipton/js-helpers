@@ -149,6 +149,28 @@ export const deepMerge = (...sources) => {
 }
 
 /**
+ * Deep clones Object obj, then returns the result of calling function mutatorCb with the clone as its argument
+ * @function
+ * @param {Object} obj - object
+ * @param {Function} mutatorCb - a callback that accepts one argument, the cloned obj, and mutates it in some way
+ * @returns the mutated clone
+ */
+export const applyToCloneOf = (obj, mutatorCb) => {
+  if (!obj) 
+    throw new Error('Obj argument in applyToCloneOf must be defined')
+  if (typeof obj !== 'object')
+    throw new Error('Obj argument in applyToCloneOf must be an object')
+  if (!mutatorCb)
+    throw new Error('mutator function in applyToCloneOf must be defined')
+  if (typeof mutatorCb !== 'function')
+    throw new Error('mutatorFunc arg in applyToCloneOf must be a function')
+
+  const clone = deepClone(obj)
+  mutatorCb(clone)
+  return clone
+}
+
+/**
  * Checks if prop exists on the object.
  * @function
  * @param {Object} obj - data to check
