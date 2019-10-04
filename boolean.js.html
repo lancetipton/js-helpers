@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>Home - Documentation</title>
+    <title>boolean.js - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -32,67 +32,112 @@
 
 <div id="main">
     
+    <h1 class="page-title">boolean.js</h1>
+    
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** @module boolean */
 
+'use strict'
 
-    <section class="package">
-        <h3>jsutils 2.3.0</h3>		
+import { toStr } from './string'
+
+/**
+ * Checks is value is a boolean.
+ * @function
+ * @example
+ * isBool([1,2,3])
+ * // Returns false
+ * @example
+ * isBool(true)
+ * // Returns true
+ * @param {*} val - value to check if is a number
+ * @return {boolean} T/F - if value is a boolean
+ */
+export const isBool = val => (
+  typeof val === 'boolean'
+)
+
+/**
+ * Checks is value is a boolean as a string.
+ * @function
+ * @example
+ * isStrBool("true")
+ * // Returns true
+ * @example
+ * isStrBool(true)
+ * // Returns false
+ * @param {*} val - value to check if boolean as a string
+ * @return {boolean} T/F - if value is a boolean
+ */
+export const isStrBool = val => (
+  val === 'false' || val === 'true'
+)
+
+/**
+ * Converts a value to a boolean as a string.
+ * @function
+ * @example
+ * convertToStrBool(true)
+ * // Returns 'true'
+ * @param {*} val - value to convert
+ * @return {string} 'true' || 'false' based on passed in value
+ */
+export const convertToStrBool = val => (
+  isBool(val)
+    ? toStr(val)
+    : !val || val === 'false' || val === '0'
+      ? 'false'
+      : 'true'
+)
+
+/**
+ * Checks if a value is falsy, excluding empty string and 0.
+ * @function
+ * @example
+ * softFalsy('')
+ * // Returns true
+ * @example
+ * softFalsy(0)
+ * // Returns true
+ * @example
+ * softFalsy(null)
+ * // Returns false
+ * @param {*} val - value to check
+ * @return {boolean} T/F based on passed in value
+ */
+export const softFalsy = val => (
+  Boolean(val || val === '' || val === 0)
+)
+
+/**
+ * Converts a value to a boolean.
+ * @function
+ * @example
+ * toBool(null)
+ * // Returns false
+ * @example
+ * toBool('false')
+ * // Returns false
+ * @example
+ * toBool('true')
+ * // Returns true
+ * @param {*} val - value to convert
+ * @return {boolean} true or false based on passed in value.
+ */
+export const toBool = val => (
+  isStrBool(val)
+    ? val === 'true'
+    : convertToStrBool(val) === 'true'
+)</code></pre>
+        </article>
     </section>
-
-
-
-
-
-
-
-
-
-    
-
-
-
-    <section class="readme">
-        <article><h1>jsutils</h1>
-<p>A small utility library for commonly used helper methods. Similar to lodash, underscore, etc...</p>
-<p>See docs <a href="https://lancetipton.github.io/jsutils">here</a></p>
-<h2>Install</h2>
-<ul>
-<li>Download the repo<pre class="prettyprint source lang-js"><code>  // Clone repo
-  git clone https://github.com/lancetipton/jsutils.git
-  // Or Add to package.json
-  &quot;dependencies&quot;: {
-    &quot;jsutils&quot;: &quot;git+https://github.com/lancetipton/jsutils.git&quot;
-    ...
-  },
-</code></pre>
-</li>
-<li>Add to your code<pre class="prettyprint source lang-js"><code>  // * Import into code
-    import jsutils from 'jsutils'
-    // Or only the methods you need
-    import { capitalize } from 'jsutils/string'
-    import { reduceObj, mapObj } from 'jsutils/object'
-
-  // * Or require code
-    const jsutils = require('jsutils')
-  
-  // * Add as html script
-    &lt;script src='/path/to/jsutils/build/jsutils.min.js'>&lt;/script>
-    // jsutils will be available on the window 
-    &lt;script>
-      const jsutils = window.jsutils
-      
-    &lt;/script>
-</code></pre>
-</li>
-</ul></article>
-    </section>
-
-
 
 
 

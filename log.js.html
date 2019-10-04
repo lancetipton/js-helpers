@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>Home - Documentation</title>
+    <title>log.js - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -32,67 +32,95 @@
 
 <div id="main">
     
+    <h1 class="page-title">log.js</h1>
+    
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** @module log */
 
+'use strict'
 
-    <section class="package">
-        <h3>jsutils 2.3.0</h3>		
-    </section>
+let SHOW_LOGS
+let METH_DEF = 'dir'
+let PREFIX = 'type'
+const LOG_TYPES = [
+  'error',
+  'info',
+  'log',
+  'dir',
+  'warn',
+]
+const isTest = process.env.NODE_ENV === 'test'
 
+/**
+ * Turns logs on || off.
+ * &lt;br> Set the default log method.
+ * &lt;br> Add a prefix to all log message
+ * @example
+ * setLogs(true, 'dir', '[ DEV MODE ]')
+ * @function
+ * @param {boolean} log - log values
+ * @param {string} methDef - default log method
+ * @param {string} prefix - string to add to all logs
+ * @return { void }
+ */
+export const setLogs = (log, methDef, prefix) => {
+  SHOW_LOGS = log
+  METH_DEF = methDef || METH_DEF || 'log'
+  PREFIX = prefix || PREFIX || 'type'
+}
 
+/**
+ * Resets log settings to default
+ * @example
+ * resetLogs()
+ * // Resets settings set from the `setLogs method`
+ * @function
+ * @return { void }
+ */
+export const resetLogs = () => {
+  SHOW_LOGS = undefined
+  METH_DEF = 'log'
+  PREFIX = 'type'
+}
 
-
-
-
-
-
-
-    
-
-
-
-    <section class="readme">
-        <article><h1>jsutils</h1>
-<p>A small utility library for commonly used helper methods. Similar to lodash, underscore, etc...</p>
-<p>See docs <a href="https://lancetipton.github.io/jsutils">here</a></p>
-<h2>Install</h2>
-<ul>
-<li>Download the repo<pre class="prettyprint source lang-js"><code>  // Clone repo
-  git clone https://github.com/lancetipton/jsutils.git
-  // Or Add to package.json
-  &quot;dependencies&quot;: {
-    &quot;jsutils&quot;: &quot;git+https://github.com/lancetipton/jsutils.git&quot;
-    ...
-  },
-</code></pre>
-</li>
-<li>Add to your code<pre class="prettyprint source lang-js"><code>  // * Import into code
-    import jsutils from 'jsutils'
-    // Or only the methods you need
-    import { capitalize } from 'jsutils/string'
-    import { reduceObj, mapObj } from 'jsutils/object'
-
-  // * Or require code
-    const jsutils = require('jsutils')
+/**
+ * Logs a string to the inspector, uses the last argument to determine the log type
+ * @example
+ * logData('data to log', 'error')
+ * // Will call console.error('data to log')
+ * @function
+ * @param {Array} args - to be passed to the log call
+ * @return { void }
+ */
+export const logData = (...args) => {
+  if(!args.length) return
   
-  // * Add as html script
-    &lt;script src='/path/to/jsutils/build/jsutils.min.js'>&lt;/script>
-    // jsutils will be available on the window 
-    &lt;script>
-      const jsutils = window.jsutils
-      
-    &lt;/script>
+  let type = args.length === 1 ? METH_DEF : args.pop()
+  if(!SHOW_LOGS &amp;&amp; type !== 'error') return
+
+  else if(typeof args[0] === 'string'){
+    if(PREFIX === 'type')
+      args[0] = `[ ${type.toUpperCase()} ] ${args[0]}`
+    else if(PREFIX)
+      args[0] = `${PREFIX} ${args[0]}`
+  }
+
+  LOG_TYPES.indexOf(type) !== -1
+    ? console[type](...args)
+    : console[METH_DEF](...args, type)
+}
+
+isTest &amp;&amp; (module.exports.getShowLogs = () => SHOW_LOGS)
 </code></pre>
-</li>
-</ul></article>
+        </article>
     </section>
-
-
 
 
 

@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>Home - Documentation</title>
+    <title>number.js - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -32,67 +32,206 @@
 
 <div id="main">
     
+    <h1 class="page-title">number.js</h1>
+    
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** @module number */
 
+'use strict'
 
-    <section class="package">
-        <h3>jsutils 2.3.0</h3>		
-    </section>
+import { toStr } from './string'
 
+/**
+ * Checks if a value is NaN.
+ * @example
+ * equalsNaN(NaN)
+ * // Returns true
+ * @example
+ * equalsNaN(1)
+ * // Returns false
+ * @example
+ * equalsNaN('')
+ * // Returns false
+ * @function
+ * @param {number} val - value to check if is NaN
+ * @return {boolean} T/F - if value is a number
+ */
+export const equalsNaN = val => (
+  typeof val === 'number' &amp;&amp; val != val
+)
 
+/**
+ * Gets numbers and floats (.) from a string.
+ * @example
+ * getNums('$1.23')
+ * // Returns '1.23'
+ * @function
+ * @param {*} val - value to pull numbers from
+ * @return {string} Numbers found in value
+ */
+export const getNums = val => (
+  toStr(val).replace(/([^.\d])/gm,'')
+)
 
+/**
+ * Checks if a number is a Float.
+ * @example
+ * isFloat(1.23)
+ * // Returns true
+ * @example
+ * isFloat('1.2')
+ * // Returns false ( because it's a string )
+ * @function
+ * @param {number} num - value to check
+ * @return {boolean} true or false - value is an Float
+ */
+export const isFloat = val => (
+  isNum(val) &amp;&amp; val % 1 !== 0
+)
 
+/**
+ * Checks if a number is an integer.
+ * @example
+ * isInt(1)
+ * // Returns true
+ * @example
+ * isInt('1')
+ * // Returns false ( because it's a string )
+ * @function
+ * @param {number} num - value to check
+ * @return {boolean} true or false - value is an Int
+ */
+export const isInt = val => (
+  isNum(val) &amp;&amp; (val % 1 === 0)
+)
 
+/**
+ * Checks is value is a number.
+ * @example
+ * isInt(1)
+ * // Returns true
+ * @example
+ * isInt(NaN)
+ * // Returns false
+ * @example
+ * isInt('1')
+ * // Returns false ( because it's a string )
+ * @function
+ * @param {number} val - value to check if is a number
+ * @return {boolean} T/F - if value is a number
+ */
+export const isNum = val => (
+  typeof val === 'number' &amp;&amp; !equalsNaN(val)
+)
 
+/**
+ * Finds the number ext base on the passed in number.
+ * @example
+ * nth(1)
+ * // Returns 'st'
+ * @example
+ * nth(2)
+ * // Returns 'nd'
+ * @example
+ * nth(5)
+ * // Returns 'th'
+ * @function
+ * @param {number} num - value to check
+ * @return {string} ext of the number
+ */
+export const nth = num => {
 
+  if(!isNum(num)){
+    num = getNums(num)
+    if(!num) return ''
+    num = toNum(num)
+    if(equalsNaN(num)) return ''
+  }
 
+  const mod = (num % 100)
+  if (mod >= 10 &amp;&amp; mod &lt;= 20)
+    return 'th'
 
-    
+  switch(num % 10) {
+    case 1:
+      return 'st'
+    case 2:
+      return 'nd'
+    case 3:
+      return 'rd'
+    default:
+      return 'th'
+  }
+}
 
+/**
+ * Converts passed in value to a float.
+ * @example
+ * toFloat('1.34')
+ * // Returns 1.34
+* @example
+ * toFloat(NaN)
+ * // Returns 0
+ * @function
+ * @param {*} val - value to convert
+ * @return {number} value converted to an float
+ */
+export const toFloat = val => (
+  val &amp;&amp;
+    !equalsNaN(val) &amp;&amp;
+    parseFloat( isNum(val) &amp;&amp; val || getNums(val) ) ||
+    0
+)
 
+/**
+ * Converts passed in value to an integer.
+ * @example
+ * toInt('1')
+ * // Returns 1
+ * @example
+ * toInt(NaN)
+ * // Returns 0
+ * @function
+ * @param {*} val - value to convert
+ * @return {number} value converted to a integer
+ */
+export const toInt = val => (
+  val &amp;&amp;
+    !equalsNaN(val) &amp;&amp; 
+    parseInt( isNum(val) &amp;&amp; val || getNums(val) ) ||
+    0
+)
 
-    <section class="readme">
-        <article><h1>jsutils</h1>
-<p>A small utility library for commonly used helper methods. Similar to lodash, underscore, etc...</p>
-<p>See docs <a href="https://lancetipton.github.io/jsutils">here</a></p>
-<h2>Install</h2>
-<ul>
-<li>Download the repo<pre class="prettyprint source lang-js"><code>  // Clone repo
-  git clone https://github.com/lancetipton/jsutils.git
-  // Or Add to package.json
-  &quot;dependencies&quot;: {
-    &quot;jsutils&quot;: &quot;git+https://github.com/lancetipton/jsutils.git&quot;
-    ...
-  },
+/**
+ * Converts passed in value to a number.
+ * @example
+ * toNum("23")
+ * // Returns 23
+ * @example
+ * toNum(NaN)
+ * // Returns 0
+ * @function
+ * @param {*} val - value to convert
+ * @return {number} value converted to a float
+ */
+export const toNum = val => (
+  isNum(val)
+    ? val
+    : val &amp;&amp;
+      !equalsNaN(val) &amp;&amp; 
+      Number(getNums(val)) ||
+      0
+)
 </code></pre>
-</li>
-<li>Add to your code<pre class="prettyprint source lang-js"><code>  // * Import into code
-    import jsutils from 'jsutils'
-    // Or only the methods you need
-    import { capitalize } from 'jsutils/string'
-    import { reduceObj, mapObj } from 'jsutils/object'
-
-  // * Or require code
-    const jsutils = require('jsutils')
-  
-  // * Add as html script
-    &lt;script src='/path/to/jsutils/build/jsutils.min.js'>&lt;/script>
-    // jsutils will be available on the window 
-    &lt;script>
-      const jsutils = window.jsutils
-      
-    &lt;/script>
-</code></pre>
-</li>
-</ul></article>
+        </article>
     </section>
-
-
 
 
 
