@@ -265,6 +265,12 @@ describe('/collection', () => {
       const source = new Bar()
       const clone = Coll.deepClone(source)
       expect(Object.getPrototypeOf(clone)).toEqual(Object.getPrototypeOf(source))
+    }),
+
+    it('should make a sealed clone if the source is sealed', () => {
+      const source = Object.seal({a: 1})
+      const clone = Coll.deepClone(source)
+      expect(Object.isSealed(clone)).toBe(true)
     })
   })
 })
