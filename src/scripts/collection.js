@@ -197,7 +197,7 @@ export const deepClone = (obj, hash = new WeakMap()) => {
   if (obj instanceof Set) return new Set(obj)
   if (hash.has(obj)) return hash.get(obj)
 
-  let result = obj instanceof Date 
+  const result = obj instanceof Date 
     ? new Date(obj)
     : obj instanceof RegExp 
       ? new RegExp(obj.source, obj.flags)
