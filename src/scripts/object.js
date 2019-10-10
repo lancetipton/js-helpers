@@ -124,7 +124,7 @@ export const deepMerge = (...sources) => {
  * const obj = {}
  * const clone = applyToCloneOf(obj, (clone) => { clone.test = 'foo'; return clone })
  * console.log(obj === clone) // prints false
- * console.log(clone.test === 'data') // prints true
+ * console.log(clone.test === 'foo') // prints true
  * @function
  * @param {Object} obj - object
  * @param {Function} mutatorCb - a callback that accepts one argument, the cloned obj, and mutates it in some way
