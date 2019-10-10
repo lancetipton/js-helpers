@@ -390,5 +390,19 @@ describe('/object', () => {
     })
   })
 
+  describe('filterObj', () => {
+    it('should work across an object\'s entries', () => {
+      const foo = { a: 1, b: 2, c: 3 }
 
+      let result = Obj.filterObj(foo, (k, v) => v > 2)
+      expect(result.a).toBe(undefined)
+      expect(result.b).toBe(undefined)
+      expect(result.c).toBe(foo.c)
+    })
+
+    it('should throw type errors for invalid input', () => {
+      expect(() => Obj.filterObj("not an object", () => {})).toThrow(TypeError)
+      expect(() => Obj.filterObj({}, null)).toThrow(TypeError)
+    })
+  })
 })
