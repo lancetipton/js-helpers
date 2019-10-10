@@ -2,8 +2,43 @@
 
 'use strict'
 
+import { isArr } from './array'
 import { isNum } from './number'
 import { hasOwn } from './object'
+
+/**
+ * Function for making repeated nested function calls succinct. Passes "item" into
+ * the first function (as its first argument), takes its result and passes that into the next function, and repeat.
+ * Continues until no functions remain, at which point it returns the value returned by the last function.
+ *  - you can also pass in an array in place of a function to specify a function to be called with some arguments. E.g.: [foo, 2, 3] would return foo(item, 2, 3)
+ * @example: pipeline(1, addFour, subtract3, (x) => x * x) // would return 4
+ * @param {*} item 
+ * @param {...Function} functions 
+ */
+export const pipeline = (item, ...functions) => {
+  return functions.reduce(
+    (result, fn) => applyToFunc(result, fn),
+    item
+  )
+}
+
+/**
+ * Helper for pipeline. Passes 'item' into 'expression' as its first argument.
+ * @param {*} item 
+ * @param {*} expression 
+ */
+const applyToFunc = (item, expression) => {
+  if (isArr(expression)) {
+    const [func, ...args] = expression
+    return func(item, ...args)
+  }
+  else if (isFunc(expression)) {
+    return expression(item) 
+  }
+  else {
+    throw new TypeError(`Pipeline expected either a function or an array (for function expressions). Found ${typeof expression}`)
+  }
+}
 
 /**
  * Check if the passed in method is a function, and calls it
