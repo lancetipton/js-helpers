@@ -354,4 +354,41 @@ describe('/object', () => {
 
   })
 
+  describe('everyEntry', () => {
+    it('should work across an object\'s entries', () => {
+      const foo = { a: 1, b: 2, c: 3}
+
+      let result = Obj.everyEntry(foo, (k,v) => (v > 2))
+      expect(result).toBe(false)
+
+      result = Obj.everyEntry(foo, (k,v) => (v > 0))
+      expect(result).toBe(true)
+    })
+
+    it('should throw type errors with invalid input', () => {
+      expect(() => Obj.everyEntry(null, () => {})).toThrow(TypeError) 
+      expect(() => Obj.everyEntry({}, "not a function")).toThrow(TypeError) 
+      expect(() => Obj.everyEntry('not an object', () => {})).toThrow(TypeError) 
+    })
+  })
+
+  describe('someEntry', () => {
+    it('should work across an object\'s entries', () => {
+      const foo = { a: 1, b: 2, c: 3}
+
+      let result = Obj.someEntry(foo, (k,v) => (v > 2))
+      expect(result).toBe(true)
+
+      result = Obj.someEntry(foo, (k,v) => (v > 4))
+      expect(result).toBe(false)
+    })
+
+    it('should throw type errors with invalid input', () => {
+      expect(() => Obj.someEntry(null, () => {})).toThrow(TypeError) 
+      expect(() => Obj.someEntry({}, "not a function")).toThrow(TypeError) 
+      expect(() => Obj.someEntry('not an object', () => {})).toThrow(TypeError) 
+    })
+  })
+
+
 })

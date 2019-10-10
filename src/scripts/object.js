@@ -3,7 +3,7 @@
 'use strict'
 
 import { logData } from './log'
-import { isFunc } from './method'
+import { isFunc, pipeline } from './method'
 import { deepClone } from './collection'
 import { sanitize, isStr } from './string'
 import { isArr } from './array'
@@ -313,3 +313,38 @@ export const keyMap = (arr, toUpperCase) => (
     return obj
   }, {}) || {}
 )
+
+/**
+ * Like "every" for arrays, but operates across each entry in obj 
+ * @param {Object} obj 
+ * @param {Function} predicate of form (key, value) => boolean. Returns true or false for the entry
+ * @returns boolean indicating that every entry satisfied the predicate or not
+ */
+export const everyEntry = (obj, predicate) => {
+  if (!obj) throw new TypeError(`Argument obj must be defined`)
+  if (!isObj(obj)) throw new TypeError(`Argument obj ${obj} must be an object.`)
+  if (!isFunc(predicate)) throw new TypeError(`Argument 'predicate' passed into everyEntry must a function. Found: ${predicate}`)
+
+  return pipeline(
+    obj,
+    Object.entries,
+    entries => entries.every(([key, value]) => predicate(key, value))
+  )
+}
+/**
+ * Like "some" for arrays, but operates across each entry in obj 
+ * @param {Object} obj 
+ * @param {Function} predicate of form (key, value) => boolean. Returns true or false for the entry
+ * @returns boolean indicating that at least one entry satisfied the predicate or not
+ */
+export const someEntry = (obj, predicate) => {
+  if (!obj) throw new TypeError(`Argument obj must be defined`)
+  if (!isObj(obj)) throw new TypeError(`Argument obj ${obj} must be an object.`)
+  if (!isFunc(predicate)) throw new TypeError(`Argument 'predicate' passed into someEntry must a function. Found: ${predicate}`)
+
+  return pipeline(
+    obj,
+    Object.entries,
+    entries => entries.some(([key, value]) => predicate(key, value))
+  )
+}
