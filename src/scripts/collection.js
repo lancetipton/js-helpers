@@ -264,8 +264,12 @@ export const repeat = (element, times, cloneDeep=false) => {
   }
   const arr = []
   for (let i = 0; i < times; i++) {
-    const value = isFunc(element) ? element() : element
-    arr.push(cloneDeep ? deepClone(value) : value)
+    const value = isFunc(element)
+      ? element() 
+      : cloneDeep
+        ? deepClone(element)
+        : element
+    arr.push(value)
   }
   return arr
 }
