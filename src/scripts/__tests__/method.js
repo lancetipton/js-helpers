@@ -196,7 +196,7 @@ describe('/method', () => {
       expect(result).toEqual(element)
     })
 
-    it('should throw a TypeError if it encountered an invalid expression', () => {
+    it('should log errors if it encountered an invalid expression', () => {
       const orgError = console.error
       console.error = jest.fn()
       expect(Method.pipeline(1, square, "invalid expression")).toEqual(1)
