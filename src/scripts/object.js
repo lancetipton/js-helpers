@@ -321,9 +321,20 @@ export const keyMap = (arr, toUpperCase) => (
  * @returns boolean indicating that every entry satisfied the predicate or not
  */
 export const everyEntry = (obj, predicate) => {
-  if (!obj) throw new TypeError(`Argument obj must be defined`)
-  if (!isObj(obj)) throw new TypeError(`Argument obj ${obj} must be an object.`)
-  if (!isFunc(predicate)) throw new TypeError(`Argument 'predicate' passed into everyEntry must a function. Found: ${predicate}`)
+  if (!obj) {
+    console.error(`everyEntry expects argument obj [${obj}] to be defined.`)
+    return false
+  }
+
+  if (!isObj(obj)) {
+    console.error(`Argument obj ${obj} must be an object.`)
+    return false
+  }
+
+  if (!isFunc(predicate)) {
+    console.error(`Argument 'predicate' passed into everyEntry must a function. Found: ${predicate}`)
+    return false
+  }
 
   return pipeline(
     obj,
@@ -338,9 +349,20 @@ export const everyEntry = (obj, predicate) => {
  * @returns boolean indicating that at least one entry satisfied the predicate or not
  */
 export const someEntry = (obj, predicate) => {
-  if (!obj) throw new TypeError(`Argument obj must be defined`)
-  if (!isObj(obj)) throw new TypeError(`Argument obj ${obj} must be an object.`)
-  if (!isFunc(predicate)) throw new TypeError(`Argument 'predicate' passed into someEntry must a function. Found: ${predicate}`)
+  if (!obj) {
+    console.error(`someEntry expects argument obj [${obj}] to be defined.`)
+    return false
+  }
+
+  if (!isObj(obj)) {
+    console.error(`Argument obj ${obj} must be an object.`)
+    return false
+  }
+
+  if (!isFunc(predicate)) {
+    console.error(`Argument 'predicate' passed into someEntry must a function. Found: ${predicate}`)
+    return false
+  }
 
   return pipeline(
     obj,
@@ -358,8 +380,17 @@ export const someEntry = (obj, predicate) => {
  */
 export const filterObj = (obj, predicate) => {
   if (!obj) return obj
-  if (!isObj(obj)) throw new TypeError(`Object ${obj} was not an object. It must be for filterObject`)
-  if (!isFunc(predicate)) throw new TypeError(`Argument 'predicate' passed into filterObject must a function. Found: ${predicate}`)
+
+  if (!isObj(obj)) {
+    console.error(`Object ${obj} was not an object. It must be for filterObject`)
+    return obj
+  }
+
+  if (!isFunc(predicate)) {
+    console.error(`Argument 'predicate' passed into filterObject must a function. Found: ${predicate}`)
+    return obj
+  } 
+
   return pipeline(
     obj,
     Object.entries,

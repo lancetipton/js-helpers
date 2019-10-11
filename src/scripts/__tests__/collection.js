@@ -319,8 +319,12 @@ describe('/collection', () => {
       expect(Coll.repeat(1, -1)).toEqual([])
     })
 
-    it('should throw a type error if something other than a number is passed as times', () => {
-      expect(() => Coll.repeat(1, "hi")).toThrow(TypeError)
+    it('should log errors and return an empty array if something other than a number is passed as times', () => {
+      const orgError = console.error
+      console.error = jest.fn()
+      expect(Coll.repeat(1, "hi")).toEqual([])
+      expect(console.error).toHaveBeenCalled()
+      console.error = orgError
     })
 
     it('should deeply clone elements if the flag is specified', () => {

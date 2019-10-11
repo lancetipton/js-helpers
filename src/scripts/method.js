@@ -40,7 +40,8 @@ const applyToFunc = (item, expression) => {
     return expression(item) 
   }
   else {
-    throw new TypeError(`Pipeline expected either a function or an array (for function expressions). Found ${typeof expression}`)
+    console.error(`Pipeline expected either a function or an array (for function expressions). Found ${typeof expression}`)
+    return item
   }
 }
 

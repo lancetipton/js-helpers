@@ -197,7 +197,11 @@ describe('/method', () => {
     })
 
     it('should throw a TypeError if it encountered an invalid expression', () => {
-      expect(() => Method.pipeline(1, square, "invalid expression").toThrow(TypeError))
+      const orgError = console.error
+      console.error = jest.fn()
+      expect(Method.pipeline(1, square, "invalid expression")).toEqual(1)
+      expect(console.error).toHaveBeenCalled()
+      console.error = orgError
     })
   })
 })
