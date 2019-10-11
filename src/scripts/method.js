@@ -28,10 +28,11 @@ export const pipeline = (item, ...functions) => {
 
 /**
  * Helper for pipeline. Passes 'item' into 'expression' as its first argument.
+ * Expression may be a function or an array of form: [function, ...remainingArguments]. 
  * @param {*} item 
  * @param {*} expression 
  */
-const applyToFunc = (item, expression) => {
+export const applyToFunc = (item, expression) => {
   if (isArr(expression)) {
     const [func, ...args] = expression
     return func(item, ...args)
