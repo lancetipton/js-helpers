@@ -391,10 +391,13 @@ export const filterObj = (obj, predicate) => {
     return obj
   } 
 
-  return pipeline(
+  return reduceObj(
     obj,
-    Object.entries,
-    entries => entries.filter(([key, value]) => predicate(key, value)),
-    Object.fromEntries
+    (key, value, data) => {
+      if (predicate(key, value))
+        data[key] = value
+      return data
+    },
+    {}
   )
 }
