@@ -4,7 +4,7 @@
 
 import { logData } from './log'
 import { isFunc, pipeline } from './method'
-import { deepClone } from './collection'
+import { deepClone, set } from './collection'
 import { sanitize, isStr } from './string'
 import { isArr } from './array'
 import { strToType } from './ext'
@@ -196,6 +196,52 @@ export const mapObj = (obj, cb) => (
     .map(([ key, value ]) => cb(key, value))
   ) || obj
 )
+
+/**
+ * Returns a new object, each entry of which is the result of applying the cb function to input's corresponding entry 
+ * @param {Object | Array} obj - regular object or array
+ * @param {Function} cb  - function of form: (key, value) => [nextKey, nextValue]
+ *  - the return type here is an array of two elements, key and value
+ *  - if a cb does not return an entry, then the original [key, value] pair that was passed into cb will be used instead
+ * @returns new object with mapping applied, or the original obj if input was invalid
+ * @example mapObj({a: 2, b: 3}, (k, v) => [k, v * v]) returns: {a: 4, b: 9}
+ * @example mapObj({a: 1}, (k, v) => ['b', v]) returns: {b: 1}
+ */
+export const mapEntries = (obj, cb) => {
+  if (!isArr(obj) && !isObj(obj)) {
+    console.error(obj, `Expected array or object for obj. Found ${typeof obj}`)
+    return obj
+  }
+
+  if (!isFunc(cb)) {
+    console.error(`Expected function for cb. Found ${typeof obj}`)
+    return obj
+  }
+
+  const entries = Object.entries(obj)
+
+  const initialValue = isArr(obj) ? [] : {}
+
+  return entries.reduce(
+    (obj, [key, value]) => {
+      const result = cb(key, value)
+      if (!isEntry(result)) {
+        console.error(`Callback function must return an entry (2-element array). Found: ${result}. mapEntries will now use the current entry.`)
+        return set(obj, key, value)
+      } 
+      return set(obj, result[0], result[1])
+    },
+    initialValue
+  )
+}
+
+/**
+ * Checks if the input is a valid entry - a 2-element array, like what Object.entries produces
+ * @param {*} maybeEntry 
+ * @returns true if it is an entry, false otherwise
+ */
+export const isEntry = (maybeEntry) => isArr(maybeEntry) && (maybeEntry.length === 2)
+
 
 /**
  * Creates a new object from passed in object with keys not defined from array.
