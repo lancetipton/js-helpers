@@ -239,6 +239,7 @@ export const mapEntries = (obj, cb) => {
  * Checks if the input is a valid entry - a 2-element array, like what Object.entries produces
  * @param {*} maybeEntry 
  * @returns true if it is an entry, false otherwise
+ * @example isEntry([1, 2]) // true
  */
 export const isEntry = (maybeEntry) => isArr(maybeEntry) && (maybeEntry.length === 2)
 

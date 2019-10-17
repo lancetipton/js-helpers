@@ -479,4 +479,26 @@ describe('/object', () => {
       console.error = orgError
     })
   })
+
+  describe("isEntry", () => {
+    it("should return true if the input is an entry, false otherwise", () => {
+      let result = Obj.isEntry([1, 2])
+      expect(result).toBe(true)
+
+      result = Obj.isEntry([1, 2, 3])
+      expect(result).toBe(false)
+
+      result = Obj.isEntry([1])
+      expect(result).toBe(false)
+
+      result = Obj.isEntry({})
+      expect(result).toBe(false)
+
+      result = Obj.isEntry(null)
+      expect(result).toBe(false)
+
+      result = Obj.isEntry([])
+      expect(result).toBe(false)
+    })
+  })
 })
