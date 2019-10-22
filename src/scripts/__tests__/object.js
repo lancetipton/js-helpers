@@ -469,14 +469,15 @@ describe('/object', () => {
     it("should log an error and return the input if the input is invalid", () => {
       const orgError = console.error
       console.error = jest.fn()
-      let result = Obj.mapEntries(1, () => {})
+      const result = Obj.mapEntries(1, () => {})
       expect(console.error).toHaveBeenCalled()
       expect(result).toEqual(1)
 
       console.error = jest.fn()
-      result = Obj.mapEntries({})
+      const nextResult = Obj.mapEntries({})
       expect(console.error).toHaveBeenCalled()
       console.error = orgError
+      expect(nextResult).toEqual({})
     })
   })
 

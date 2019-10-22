@@ -214,7 +214,7 @@ export const mapEntries = (obj, cb) => {
   }
 
   if (!isFunc(cb)) {
-    console.error(`Expected function for cb. Found ${typeof obj}`)
+    console.error(`Expected function for cb. Found ${typeof cb}`)
     return obj
   }
 
@@ -226,7 +226,7 @@ export const mapEntries = (obj, cb) => {
     (obj, [key, value]) => {
       const result = cb(key, value)
       if (!isEntry(result)) {
-        console.error(`Callback function must return an entry (2-element array). Found: ${result}. mapEntries will now use the current entry.`)
+        console.error(`Callback function must return entry (2-element array). Found: ${result}. Using current entry instead.`)
         return set(obj, key, value)
       } 
       return set(obj, result[0], result[1])
