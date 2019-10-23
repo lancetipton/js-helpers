@@ -483,23 +483,31 @@ describe('/object', () => {
 
   describe("isEntry", () => {
     it("should return true if the input is an entry, false otherwise", () => {
-      let result = Obj.isEntry([1, 2])
-      expect(result).toBe(true)
+      const cases = [
+        [ [1, 2], true ],
+        [ [1, 2, 3], false ],
+        [ [1], false ],
+        [ {}, false ],
+        [ null, false ],
+        [ [], false ],
+      ]
+      cases.map(([entry, expectedResult]) => {
+        const result = Obj.isEntry(entry)
+        expect(result).toBe(expectedResult)
+      })
+    })
 
-      result = Obj.isEntry([1, 2, 3])
-      expect(result).toBe(false)
-
-      result = Obj.isEntry([1])
-      expect(result).toBe(false)
-
-      result = Obj.isEntry({})
-      expect(result).toBe(false)
-
-      result = Obj.isEntry(null)
-      expect(result).toBe(false)
-
-      result = Obj.isEntry([])
-      expect(result).toBe(false)
+    it("should check that the first element is number or string", () => {
+        const cases = [
+          [ ["id", 1], true ],
+          [ [0, "value"], true ],
+          [ [new Date(), "value"], false ],
+          [ [true, "value"], false ],
+        ]
+        cases.map(([entry, expectedResult]) => {
+          const result = Obj.isEntry(entry)
+          expect(result).toBe(expectedResult)
+        })
     })
   })
 })

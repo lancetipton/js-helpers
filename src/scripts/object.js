@@ -6,6 +6,7 @@ import { logData } from './log'
 import { isFunc, pipeline } from './method'
 import { deepClone, set } from './collection'
 import { sanitize, isStr } from './string'
+import { isNum } from './number'
 import { isArr } from './array'
 import { strToType } from './ext'
 
@@ -201,7 +202,7 @@ export const mapObj = (obj, cb) => (
  * Returns a new object, each entry of which is the result of applying the cb function to input's corresponding entry 
  * @param {Object | Array} obj - regular object or array
  * @param {Function} cb  - function of form: (key, value) => [nextKey, nextValue]
- *  - the return type here is an array of two elements, key and value
+ *  - the return type here is an array of two elements, key and value, where `key` must be either a string or a number
  *  - if a cb does not return an entry, then the original [key, value] pair that was passed into cb will be used instead
  * @returns new object with mapping applied, or the original obj if input was invalid
  * @example mapObj({a: 2, b: 3}, (k, v) => [k, v * v]) returns: {a: 4, b: 9}
@@ -226,7 +227,7 @@ export const mapEntries = (obj, cb) => {
     (obj, [key, value]) => {
       const result = cb(key, value)
       if (!isEntry(result)) {
-        console.error(`Callback function must return entry (2-element array). Found: ${result}. Using current entry instead.`)
+        console.error(`Callback function must return entry. Found: ${result}. Using current entry instead.`)
         return set(obj, key, value)
       } 
       return set(obj, result[0], result[1])
@@ -236,12 +237,18 @@ export const mapEntries = (obj, cb) => {
 }
 
 /**
- * Checks if the input is a valid entry - a 2-element array, like what Object.entries produces
+ * Checks if the input is a valid entry - a 2-element array, like what Object.entries produces.
+ * Expects the first element in the entry to be either a string or a number.
  * @param {*} maybeEntry 
  * @returns true if it is an entry, false otherwise
  * @example isEntry([1, 2]) // true
+ * @example isEntry(["id", 87]) // true
+ * @example isEntry([new Date(), 2]) // false, first element not string or number
+ * @example isEntry([1, 2, 3]) // false, too many elements
  */
-export const isEntry = (maybeEntry) => isArr(maybeEntry) && (maybeEntry.length === 2)
+export const isEntry = (maybeEntry) => isArr(maybeEntry) 
+  && (maybeEntry.length === 2)
+  && (isNum(maybeEntry[0]) || isStr(maybeEntry[0]))
 
 
 /**
