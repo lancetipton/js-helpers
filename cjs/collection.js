@@ -4,30 +4,24 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.deepClone = exports.unset = exports.set = exports.reduceColl = exports.mapColl = exports.isEmptyColl = exports.isColl = exports.get = void 0;
+exports.repeat = exports.deepClone = exports.unset = exports.set = exports.reduceColl = exports.mapColl = exports.isEmptyColl = exports.isColl = exports.get = void 0;
 
 var _method = require("./method");
 
 var _array = require("./array");
 
+var _number = require("./number");
+
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
 
-function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
-/**
- * Updates a collection by removing, getting, adding to it.
- * @memberof collection
- * @param {Object} obj - object to update
- * @param {string|array} path - path to the property to update
- * @param {*} type - value to update || type
- * @return {*} based on update method
- */
 const updateColl = (obj, path, type, val) => {
   const org = obj;
   if (!isColl(obj) || !obj || !path) return undefined;
@@ -186,6 +180,7 @@ const unset = (obj, path) => updateColl(obj, path, 'unset');
  * // Works with array too
  * deepClone([ [ [ 0 ] ] ])
  * // Returns copy of the passed in collection item
+ * @function
  * @param {Object} obj - object to clone
  * @return {Object} - cloned Object
  */
@@ -209,6 +204,7 @@ const deepClone = (obj, hash = new WeakMap()) => {
 };
 /**
  * Helper for deepClone. Deeply clones the object, including its properties, and preserves the prototype and isFrozen and isSealed state
+ * @function
  * @param {Object} objectWithPrototype - any object that has a prototype
  * @returns {Object} the cloned object 
  */
@@ -234,3 +230,35 @@ const cloneObjWithPrototypeAndProperties = objectWithPrototype => {
   if (Object.isSealed(objectWithPrototype)) Object.seal(clone);
   return clone;
 };
+/**
+ * Returns an array composed of element repeated "times" times. If element is a function, it will be called.
+ * <br> Note: if you simply want to run a function some number of times, without returning an array of its results, @see Method.doIt
+ * @param {*} element - a value or a function. If it is a function, repeat will call it each repeated time
+ * @param {number} times - number of times that element should be included/called for the resulting array. Anything less than or equal to 0, or not a number, will return an empty array.
+ * @function
+ * @param {boolean} cloneDeep - if true, it will deeply clone the element for every instance in the resulting array 
+ * @returns an array of repeated elements or results from the function call
+ * @example repeat(1, 3) // returns [1, 1, 1]
+ * @example repeat(() => 2 * 2, 3) // returns [4, 4, 4]
+ */
+
+
+const repeat = (element, times, cloneDeep = false) => {
+  if (!times || times <= 0) return [];
+
+  if (!(0, _number.isNum)(times)) {
+    console.error("Times argument must be a number");
+    return [];
+  }
+
+  const arr = [];
+
+  for (let i = 0; i < times; i++) {
+    const value = (0, _method.isFunc)(element) ? element() : cloneDeep ? deepClone(element) : element;
+    arr.push(value);
+  }
+
+  return arr;
+};
+
+exports.repeat = repeat;

@@ -6,6 +6,8 @@ require("core-js/modules/es.symbol.description");
 
 require("core-js/modules/es.symbol.iterator");
 
+require("core-js/modules/es.array.for-each");
+
 require("core-js/modules/es.array.is-array");
 
 require("core-js/modules/es.array.iterator");
@@ -24,6 +26,8 @@ require("core-js/modules/es.object.freeze");
 
 require("core-js/modules/es.object.get-prototype-of");
 
+require("core-js/modules/es.object.is");
+
 require("core-js/modules/es.object.is-frozen");
 
 require("core-js/modules/es.object.is-sealed");
@@ -36,7 +40,13 @@ require("core-js/modules/es.object.set-prototype-of");
 
 require("core-js/modules/es.object.to-string");
 
+require("core-js/modules/es.regexp.to-string");
+
 require("core-js/modules/es.string.iterator");
+
+require("core-js/modules/es.string.repeat");
+
+require("core-js/modules/web.dom-collections.for-each");
 
 require("core-js/modules/web.dom-collections.iterator");
 
@@ -54,7 +64,7 @@ function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArra
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
 
-function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
@@ -380,6 +390,54 @@ describe('/collection', function () {
       });
       var clone = Coll.deepClone(source);
       expect(Object.isSealed(clone)).toBe(true);
+    });
+  });
+  describe('repeat', function () {
+    it('should repeat the element the specified number of times', function () {
+      var length = 5;
+      var element = 1;
+      var repeated = Coll.repeat(element, length);
+      expect(repeated.length).toEqual(length);
+      repeated.forEach(function (el) {
+        return expect(el).toEqual(element);
+      });
+    });
+    it('should work with functions as the element', function () {
+      var element = 2;
+
+      var func = function func() {
+        return 2;
+      };
+
+      var length = 10;
+      var repeated = Coll.repeat(func, length);
+      expect(repeated.length).toEqual(length);
+      repeated.forEach(function (el) {
+        return expect(el).toEqual(element);
+      });
+    });
+    it('should return an empty array if the times arg is <= 0', function () {
+      expect(Coll.repeat(1, null)).toEqual([]);
+      expect(Coll.repeat(1, 0)).toEqual([]);
+      expect(Coll.repeat(1, -1)).toEqual([]);
+    });
+    it('should log errors and return an empty array if something other than a number is passed as times', function () {
+      var orgError = console.error;
+      console.error = jest.fn();
+      expect(Coll.repeat(1, "hi")).toEqual([]);
+      expect(console.error).toHaveBeenCalled();
+      console.error = orgError;
+    });
+    it('should deeply clone elements if the flag is specified', function () {
+      var element = {
+        a: {
+          b: 1
+        }
+      };
+      var repeatedEl = Coll.repeat(element, 1, true)[0];
+      expect(repeatedEl.a.b).toEqual(element.a.b);
+      expect(Object.is(repeatedEl, element)).toBe(false);
+      expect(Object.is(repeatedEl.a, element.a)).toBe(false);
     });
   });
 });

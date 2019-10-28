@@ -4,7 +4,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.keyMap = exports.toObj = exports.trimStringFields = exports.sanitizeCopy = exports.reduceObj = exports.pickKeys = exports.omitKeys = exports.mapObj = exports.jsonEqual = exports.isObj = exports.hasOwn = exports.applyToCloneOf = exports.deepMerge = exports.deepFreeze = exports.eitherObj = exports.clearObj = exports.cloneJson = void 0;
+exports.filterObj = exports.someEntry = exports.everyEntry = exports.keyMap = exports.toObj = exports.trimStringFields = exports.sanitizeCopy = exports.reduceObj = exports.pickKeys = exports.omitKeys = exports.mapObj = exports.jsonEqual = exports.isObj = exports.hasOwn = exports.applyToCloneOf = exports.deepMerge = exports.deepFreeze = exports.eitherObj = exports.clearObj = exports.cloneJson = void 0;
 
 var _log = require("./log");
 
@@ -22,12 +22,6 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-/**
- * Clones an object by converting to JSON string and back.
- * @function
- * @param {Object} obj - object to clone
- * @returns {Object} copy of original object
- */
 const cloneJson = obj => {
   try {
     return JSON.parse(JSON.stringify(obj));
@@ -116,7 +110,7 @@ const deepMerge = (...sources) => {
  * const obj = {}
  * const clone = applyToCloneOf(obj, (clone) => { clone.test = 'foo'; return clone })
  * console.log(obj === clone) // prints false
- * console.log(clone.test === 'data') // prints true
+ * console.log(clone.test === 'foo') // prints true
  * @function
  * @param {Object} obj - object
  * @param {Function} mutatorCb - a callback that accepts one argument, the cloned obj, and mutates it in some way
@@ -298,5 +292,90 @@ const keyMap = (arr, toUpperCase) => (0, _array.isArr)(arr) && arr.reduce((obj, 
   obj[use] = use;
   return obj;
 }, {}) || {};
+/**
+ * Like "every" for arrays, but operates across each entry in obj
+ * @function
+ * @param {Object} obj 
+ * @param {Function} predicate of form (key, value) => boolean. Returns true or false for the entry
+ * @returns boolean indicating that every entry satisfied the predicate or not
+ */
+
 
 exports.keyMap = keyMap;
+
+const everyEntry = (obj, predicate) => {
+  if (!obj) {
+    console.error(`everyEntry expects argument obj [${obj}] to be defined.`);
+    return false;
+  }
+
+  if (!isObj(obj)) {
+    console.error(`Argument obj ${obj} must be an object.`);
+    return false;
+  }
+
+  if (!(0, _method.isFunc)(predicate)) {
+    console.error(`Argument 'predicate' passed into everyEntry must a function. Found: ${predicate}`);
+    return false;
+  }
+
+  return (0, _method.pipeline)(obj, Object.entries, entries => entries.every(([key, value]) => predicate(key, value)));
+};
+/**
+ * Like "some" for arrays, but operates across each entry in obj
+ * @function
+ * @param {Object} obj 
+ * @param {Function} predicate of form (key, value) => boolean. Returns true or false for the entry
+ * @returns boolean indicating that at least one entry satisfied the predicate or not
+ */
+
+
+exports.everyEntry = everyEntry;
+
+const someEntry = (obj, predicate) => {
+  if (!obj) {
+    console.error(`someEntry expects argument obj [${obj}] to be defined.`);
+    return false;
+  }
+
+  if (!isObj(obj)) {
+    console.error(`Argument obj ${obj} must be an object.`);
+    return false;
+  }
+
+  if (!(0, _method.isFunc)(predicate)) {
+    console.error(`Argument 'predicate' passed into someEntry must a function. Found: ${predicate}`);
+    return false;
+  }
+
+  return (0, _method.pipeline)(obj, Object.entries, entries => entries.some(([key, value]) => predicate(key, value)));
+};
+/**
+ * Returns a new object, consisting of every key-value pair from obj that, when passed into the predicate, returned true
+ * @function
+ * @param {*} obj - regular object
+ * @param {*} predicate  - function of form: (key, value) => Boolean
+ * @returns object consisting of a subset of the entries from obj
+ * @example: filterObj({a: 2, b: 3}, (k, v) => (v > 2)) returns: {b: 3}
+ */
+
+
+exports.someEntry = someEntry;
+
+const filterObj = (obj, predicate) => {
+  if (!obj) return obj;
+
+  if (!isObj(obj)) {
+    console.error(`Object ${obj} was not an object. It must be for filterObject`);
+    return obj;
+  }
+
+  if (!(0, _method.isFunc)(predicate)) {
+    console.error(`Argument 'predicate' passed into filterObject must a function. Found: ${predicate}`);
+    return obj;
+  }
+
+  return (0, _method.pipeline)(obj, Object.entries, entries => entries.filter(([key, value]) => predicate(key, value)), Object.fromEntries);
+};
+
+exports.filterObj = filterObj;
