@@ -10,6 +10,12 @@ const promiseHelper = isValid => new Promise((res, rej) => {
   }, 100)
 })
 
+const promiseError = isValid => new Promise((res, rej) => {
+  setTimeout(() => {
+    throw new Error(`Promise Error`)
+  }, 100)
+})
+
 describe('/method', () => {
 
   beforeEach(() => jest.resetAllMocks())
@@ -140,7 +146,6 @@ describe('/method', () => {
     })
 
   })
-  
 
   describe('isFunc', () => {
 
@@ -202,7 +207,7 @@ describe('/method', () => {
       done()
     })
 
-    it('should return an error for first slot when an error is caught', async (done) => {
+    it('should return an error for first slot when the promise is rejected', async (done) => {
       const [ err, data ] = await Method.limbo(promiseHelper(false))
 
       expect(err instanceof Error).toBe(true)
@@ -228,6 +233,14 @@ describe('/method', () => {
     })
 
     it('should return an error for first slot when no promise is passed in', async (done) => {
+      const [ err, data ] = await Method.limbo()
+
+      expect(err instanceof Error).toBe(true)
+
+      done()
+    })
+
+    it('should return an error for first slot when an error is thrown', async (done) => {
       const [ err, data ] = await Method.limbo()
 
       expect(err instanceof Error).toBe(true)
