@@ -245,6 +245,7 @@ export const throttleLast = (func, cb, wait = 100) => {
 
 /**
  * Adds catch to a promise for better error handling of await functions
+ * <br> Removes the need for wrapping await in a try / catch
  * @example
  * const [ err, data ] = await limbo(promiseFunction())
  * // returns an array
