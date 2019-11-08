@@ -1,4 +1,5 @@
 /** @module string */
+const { mapEntries, isObj } = require('./object')
 
 'use strict'
 
@@ -15,6 +16,21 @@ export const buildPath = (...args) => {
   }, '')
   
   return built.replace(/([^:\/]|^)\/{2,}/g, '$1/')
+}
+
+
+/**
+ * Converts a string to camel case.
+ * @function
+ * @param {string} string to be converted
+ * @return {string} - string in camel case format
+ */
+export const snakeCase = (str) => {
+  return isStr(str) && str
+    .split(/(?=[A-Z])|[\s_-]/gm)
+    .join('_')
+    .toLowerCase() 
+    || str
 }
 
 

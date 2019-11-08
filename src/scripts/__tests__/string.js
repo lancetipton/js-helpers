@@ -257,4 +257,21 @@ describe('/string', () => {
 
   })
 
+  describe('snakeCase', () => {
+
+    it('should snake a string from any case', () => {
+      const cases = [
+        'fooBar',
+        'foo_bar',
+        'FooBar',
+        'foo-bar'
+      ]
+      
+      cases.map(str => {
+        const result = Str.snakeCase(str)
+        expect(result).toEqual('foo_bar')
+      }) 
+    })
+  })
+
 })
