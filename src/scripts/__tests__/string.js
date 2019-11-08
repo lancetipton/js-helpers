@@ -258,19 +258,34 @@ describe('/string', () => {
   })
 
   describe('snakeCase', () => {
-
-    it('should snake a string from any case', () => {
-      const cases = [
-        'fooBar',
-        'foo_bar',
-        'FooBar',
-        'foo-bar'
-      ]
-      
-      cases.map(str => {
+    const cases = [
+      'fooBar',
+      'foo_bar',
+      'FooBar',
+      'FooBAR',
+      'foo-bar',
+      'foo-BAR',
+      'Foo-Bar',
+      'FOO-BAR',
+      'Foo Bar',
+      'foo bar',
+    ]
+    
+    cases.map(str => {
+      it(`should convert ${str} to snake case`, () => {
         const result = Str.snakeCase(str)
         expect(result).toEqual('foo_bar')
       }) 
+    })
+  })
+
+  describe('mapString', () => {
+    it('should map each character', () => {
+      const result = Str.mapString(
+        'test',
+        c => c === 's' ? 'x' : c
+      )
+      expect(result).toEqual('text')
     })
   })
 
