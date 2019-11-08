@@ -523,6 +523,7 @@ describe('/object', () => {
       const result = Obj.mapKeys(obj, snakeCase)
       expect(result.foo_bar).toEqual(obj.fooBar)
       expect(result.pascal_case).toEqual(obj.PascalCase)
+      expect(result.css_crap).toEqual(obj['css-crap'])
     })
   })
 })
