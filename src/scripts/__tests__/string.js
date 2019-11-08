@@ -277,6 +277,11 @@ describe('/string', () => {
         expect(result).toEqual('foo_bar')
       }) 
     })
+
+    it('should leave a single word unchanged', () => {
+      const word = 'foo'
+      expect(Str.snakeCase(word)).toEqual('foo')
+    })
   })
 
   describe('mapString', () => {
