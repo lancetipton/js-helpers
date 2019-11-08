@@ -20,10 +20,10 @@ export const buildPath = (...args) => {
 
 
 /**
- * Converts a string to camel case.
+ * Converts a string to snake_case.
  * @function
- * @param {string} string to be converted
- * @return {string} - string in camel case format
+ * @param {string} str to be converted
+ * @returns the string in snake_case, or the input if it is not a string
  */
 export const snakeCase = (str) => {
   return isStr(str) && str
