@@ -261,6 +261,7 @@ describe('/string', () => {
     const cases = [
       'fooBar',
       'foo_bar',
+      'FOO_BAR',
       'FooBar',
       'FooBAR',
       'foo-bar',
