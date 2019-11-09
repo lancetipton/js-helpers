@@ -326,7 +326,7 @@ export const shallowEqual = (col1, col2, path) => {
   
   // Loop the keys, and ensure the other collection has the key and it's value is the same
   for (const key in col1)
-    if (!col2[key] || col1[key] !== col2[key]) return false
+    if (col1[key] !== col2[key]) return false
 
   // Keys and values are equal, so return true
   return true
