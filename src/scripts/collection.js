@@ -309,7 +309,7 @@ export const repeat = (element, times, cloneDeep=false) => {
 export const shallowEqual = (col1, col2, path) => {
 
   // If a path is passed in, update the collections to be that path
-  if(path && (isArr(path) || isStr(path) && path.indexOf('.') !== -1 )){
+  if(path && (isArr(path) || isStr(path))){
     col1 = get(col1, path)
     col2 = get(col2, path)
   }
