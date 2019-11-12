@@ -8,6 +8,52 @@ describe('/collection', () => {
   
   describe('get', () => {
 
+    it('should return fallback when it sees null || undefined value', () => {
+      const getObj = { 
+        data: undefined  
+      }
+      const path = 'data'
+      expect(Coll.get(getObj, path, 0) === 0).toBe(true)
+
+      const getObj2 = { 
+        data: {
+          foo: {
+            bar: null
+          }
+        }  
+      }
+      const path2 = ['data', 'foo', 'bar']
+      expect(Coll.get(getObj2, path2, 0) === 0).toBe(true)
+
+    })
+
+    it('should NOT modify the traversed path upon failure', () => {
+      const obj = { 
+        foo: 123,
+        data: 'Hello'  
+      }
+      const path = ['data', 'path2']
+
+      // path2 doesn't exist, should return fallback value
+      expect(Coll.get(obj, path, 0) === 0).toBe(true)
+      // traversed path should keep its value
+      expect(obj.foo).toEqual(123)
+      expect(obj.data).toEqual('Hello')
+
+      const obj2 = { 
+        foo: 123,
+        data: {
+          count: 100
+        }  
+      }
+      const path2 = ['data', 'count', 'toes']
+
+      expect(Coll.get(obj2, path2, 0) === 0).toBe(true)
+      // traversed path should keep its value
+      expect(obj2.foo).toEqual(123)
+      expect(obj2.data.count).toEqual(100)
+    })
+
     it('should get a value on an object', () => {
       const getObj = { data: [ { foo: 'duper' } ] }
       const path = 'data'

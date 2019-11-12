@@ -6,7 +6,7 @@ import { isFunc } from './method'
 import { isArr } from './array'
 import { isNum } from './number'
 import { isStr } from './string'
-
+import { cloneDeep } from 'lodash'
 /**
  * Updates a collection by removing, getting, adding to it.
  * @memberof collection
@@ -20,7 +20,8 @@ const updateColl = (obj, path, type, val) => {
   if (!isColl(obj) || !obj || !path)
     return type !== 'set' && val || undefined
   
-  const parts = isArr(path) ? path : path.split('.')
+  // cloneDeep so we don't modify the reference
+  const parts = isArr(path) ? cloneDeep(path) : path.split('.')
   const key = parts.pop()
   let prop
   let breakPath
@@ -29,8 +30,10 @@ const updateColl = (obj, path, type, val) => {
     isColl(obj[prop])
       ? ( obj = obj[prop] )
       : (() => {
+
           if(type !== 'set') breakPath = true
-          obj[prop] = {}
+          // only if obj[prop] has no value, set as empty obj
+          if (obj[prop] == null) obj[prop] = {}
           obj = obj[prop]
         })()
 
@@ -39,7 +42,7 @@ const updateColl = (obj, path, type, val) => {
 
   return type === 'get'
     // Get return the value
-    ? key in obj
+    ? key in obj && obj[key] != null
       ? obj[key]
       : val
     : type === 'unset'
