@@ -8,25 +8,6 @@ describe('/collection', () => {
   
   describe('get', () => {
 
-    it('should return fallback when it sees null || undefined value', () => {
-      const getObj = { 
-        data: undefined  
-      }
-      const path = 'data'
-      expect(Coll.get(getObj, path, 0) === 0).toBe(true)
-
-      const getObj2 = { 
-        data: {
-          foo: {
-            bar: null
-          }
-        }  
-      }
-      const path2 = ['data', 'foo', 'bar']
-      expect(Coll.get(getObj2, path2, 0) === 0).toBe(true)
-
-    })
-
     it('should NOT modify the traversed path upon failure', () => {
       const obj = { 
         foo: 123,
