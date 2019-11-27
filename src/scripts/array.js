@@ -4,6 +4,7 @@
 
 const { isNum } = require('./number')
 const { isObj } = require('./object')
+const { isFunc, getType: getType } = require('./method')
 
 /**
  * Randomly selects values from a passed in array.
@@ -85,6 +86,7 @@ export const cloneArr = arr => (
 
 /**
  * Returns a new array with the same elements as arr, excluding `count` elements beginning at index `startIndex`
+ * @function
  * @param {Array} arr 
  * @param {Number} startIndex 
  * @param {Number} count 
@@ -108,4 +110,34 @@ export const omitRange = (arr, startIndex, count) => {
   nextArr.splice(startIndex, count)
 
   return nextArr
+}
+
+/**
+ * Maps an array, but flattens any resulting elements that are arrays. 
+ * @function
+ * @example
+ * [1, 2].map(x => [x * 2]) // returns [[2], [4]]
+ * flatMap([1, 2], x => [x * 2]) // returns [2, 4]
+ * @param {Array} arr - array to map across
+ * @param {Function} mapFn - function for mapping
+ */
+export const flatMap = (arr, mapFn) => {
+  if (!isArr(arr)) {
+    console.error(`Expected arr to be an array. Found: ${getType(arr)}`)
+    return arr
+  }
+  if (!isFunc(mapFn)) {
+    console.error(`Expected mapFn to be a function. Found: ${getType(mapFn)}`)
+    return arr
+  }
+  return arr.reduce(
+    (finalArr, current) => {
+      const result = mapFn(current)
+      isArr(result)
+        ? result.map(el => finalArr.push(el))
+        : finalArr.push(result)
+      return finalArr
+    },
+    []
+  )
 }

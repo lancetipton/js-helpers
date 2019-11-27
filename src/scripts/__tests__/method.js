@@ -324,4 +324,19 @@ describe('/method', () => {
     })
   })
 
+  describe('getType', () => {
+    const cases = [
+      [ null, 'null' ],
+      [ undefined, typeof undefined ],
+      [ {}, typeof {} ],
+      [ [], 'array' ],
+      [ '', typeof '' ],
+      [ 1, typeof 1],
+    ]
+    cases.map(([ value, expected ]) => {
+      it (`should return the right type for ${expected}`, () => {
+        expect(Method.getType(value)).toEqual(expected)
+      })
+    })
+  })
 })

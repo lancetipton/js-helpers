@@ -264,6 +264,17 @@ export const limbo = promise => {
 }
 
 /**
+ * @function
+ * @returns the type of element. Returns 'null' for null and 'array' for array, instead of 'object' like the built-in typeof operator returns
+ * @param {*} element 
+ */
+export const getType = element => {
+  if (element === null) return 'null'
+  if (isArr(element)) return 'array'
+  return typeof element
+}
+
+/**
  * Creates a uuid, unique up to around 20 million iterations.
  * @example
  * uuid()

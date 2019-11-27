@@ -200,4 +200,18 @@ describe('/array', () => {
       })
     })
   })
+
+  describe ('flatMap', () => {
+    it ('should return a flattened, mapped array', () => {
+      const arr = [ 1, 2, 3 ]
+      const result = Arr.flatMap(arr, x => [x * x])
+      expect(result).toEqual([ 1, 4, 9 ])
+    })
+
+    it ('should ignore flattening when encountering anything other than an array', () => {
+      const arr = [ 1, 2, 3 ]
+      const result = Arr.flatMap(arr, x => (x > 1) ? x : [x * 3])
+      expect(result).toEqual([ 3, 2, 3 ])
+    })
+  })
 })
