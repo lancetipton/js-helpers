@@ -4,7 +4,7 @@
 
 const { isNum } = require('./number')
 const { isObj } = require('./object')
-const { isFunc, getType: getType } = require('./method')
+const { isFunc, getType } = require('./method')
 
 /**
  * Randomly selects values from a passed in array.
