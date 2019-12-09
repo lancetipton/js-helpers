@@ -4,7 +4,8 @@
 
 const { isNum } = require('./number')
 const { isObj } = require('./object')
-const { isFunc, getType } = require('./method')
+const { isFunc } = require('./method')
+const { typeOf } = require('./ext')
 
 /**
  * Randomly selects values from a passed in array.
@@ -113,7 +114,9 @@ export const omitRange = (arr, startIndex, count) => {
 }
 
 /**
- * Maps an array, but flattens any resulting elements that are arrays. 
+ * Maps each element using mapping function `mapFn`, but returns the result as a flattened array.
+ * It is equivalent to map() followed by flattening to depth 1, but flatMap is a useful shortcut,
+ * and merging both steps into one method (with one pass over the array) is slightly more efficient. 
  * @function
  * @example
  * [1, 2].map(x => [x * 2]) // returns [[2], [4]]
@@ -123,11 +126,11 @@ export const omitRange = (arr, startIndex, count) => {
  */
 export const flatMap = (arr, mapFn) => {
   if (!isArr(arr)) {
-    console.error(`Expected arr to be an array. Found: ${getType(arr)}`)
+    console.error(`Expected arr to be an array. Found: ${typeOf(arr)}`)
     return arr
   }
   if (!isFunc(mapFn)) {
-    console.error(`Expected mapFn to be a function. Found: ${getType(mapFn)}`)
+    console.error(`Expected mapFn to be a function. Found: ${typeOf(mapFn)}`)
     return arr
   }
   return arr.reduce(
