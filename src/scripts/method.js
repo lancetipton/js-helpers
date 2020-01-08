@@ -289,18 +289,19 @@ export const uuid = a => a ? (a ^ Math.random() * 16 >> a / 4).toString(16) : ([
  */
 export const cloneFunc = func => {
   const funcRef = func
-  const newThat = (...args) => new funcRef(...args)
+  const funcWrap = (...args) => new funcRef(...args)
 
-  const cloneFunc = (...args) => {
-    return func instanceof cloneFunc
-      ? newThat.apply(null, args)
+  const funcClone = (...args) => {
+    return func instanceof funcClone
+      ? funcWrap.apply(null, args)
       : funcRef.apply(func, args)
   }
 
   for(let key in func )
-    func.hasOwnProperty(key) && (cloneFunc[key] = func[key])
+    func.hasOwnProperty(key) && (funcClone[key] = func[key])
   
-  Object.defineProperty(cloneFunc, 'name', { value: func.name, configurable: true })
+  Object.defineProperty(funcClone, 'name', { value: func.name, configurable: true })
+  funcClone.toString = () => func.toString()
 
-  return cloneFunc
+  return funcClone
 }

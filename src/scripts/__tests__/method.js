@@ -172,7 +172,7 @@ describe('/method', () => {
 
     })
 
-    it('should return a function access to in scope variables', () => {
+    it('should return a function with access to in scope variables', () => {
 
       const oldLog = console.log
       console.log = jest.fn()
@@ -220,6 +220,15 @@ describe('/method', () => {
       const clone = Method.cloneFunc(test)
 
       expect(clone.name).toBe('test')
+
+    })
+
+    it('should have the same response from the toString method', () => {
+
+      const test = () => { return 'test' }
+      const clone = Method.cloneFunc(test)
+
+      expect(clone.toString()).toBe(test.toString())
 
     })
 
