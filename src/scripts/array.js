@@ -4,7 +4,7 @@
 
 const { isNum } = require('./number')
 const { isObj } = require('./object')
-const { isFunc } = require('./method')
+const { isFunc, isValid } = require('./method')
 const { typeOf } = require('./ext')
 
 /**
@@ -93,18 +93,12 @@ export const cloneArr = arr => (
  * @param {Number} count 
  */
 export const omitRange = (arr, startIndex, count) => {
-  if (!isArr(arr)) {
-    console.error(`omitRange expected Array. Found ${typeof arr}`)
-    return arr
-  }
-  if (!isNum(startIndex) || startIndex < 0) {
-    console.error(`omitRange expected non-negative startIndex. Found ${startIndex}`)
-    return arr
-  }
-  if (!isNum(count) || count < 0) {
-    console.error(`omitRange expected non-negative count. Found ${count}`)
-    return arr
-  }
+  const valid = isValid(
+    [ isArr(arr), `omitRange expected Array. Found ${typeof arr}`],
+    [ isNum(startIndex) && startIndex >= 0 , `omitRange expected non-negative startIndex. Found ${startIndex}` ],
+    [ isNum(count) && count >= 0, `omitRange expected non-negative count. Found ${count}`]
+  )
+  if (!valid) return arr
 
   const nextArr = [ ...arr ]
 
@@ -125,22 +119,19 @@ export const omitRange = (arr, startIndex, count) => {
  * @param {Function} mapFn - function for mapping
  */
 export const flatMap = (arr, mapFn) => {
-  if (!isArr(arr)) {
-    console.error(`Expected arr to be an array. Found: ${typeOf(arr)}`)
-    return arr
-  }
-  if (!isFunc(mapFn)) {
-    console.error(`Expected mapFn to be a function. Found: ${typeOf(mapFn)}`)
-    return arr
-  }
-  return arr.reduce(
-    (finalArr, current) => {
-      const result = mapFn(current)
-      isArr(result)
-        ? result.map(el => finalArr.push(el))
-        : finalArr.push(result)
-      return finalArr
-    },
-    []
-  )
+  return isValid(
+      [ isArr(arr), `Expected arr to be an array. Found: ${typeOf(arr)}`, arr ],
+      [ isFunc(mapFn), `Expected mapFn to be a function. Found: ${typeOf(mapFn)}`, mapFn ])
+    ? arr.reduce(
+      (finalArr, current) => {
+        const result = mapFn(current)
+        isArr(result)
+          ? result.map(el => finalArr.push(el))
+          : finalArr.push(result)
+        return finalArr
+      },
+      []
+    )
+    : arr // if not valid, just return the array
 }
+

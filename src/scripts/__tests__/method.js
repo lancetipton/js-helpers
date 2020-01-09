@@ -1,5 +1,5 @@
-
 const { isArr } = require('../array')
+const { isStr } = require('../string')
 const Method = require('../method')
 
 const promiseHelper = isValid => new Promise((res, rej) => {
@@ -322,5 +322,81 @@ describe('/method', () => {
       expect(console.error).toHaveBeenCalled()
       console.error = orgError
     })
+  })
+})
+
+describe('match', () => {
+  it ('should match the first matching case', () => {
+    const expectedResult = 55
+
+    const matchArg = 'wow'
+    const result = Method.match(
+      matchArg, 
+      [ 'whoa', () => 1 ],
+      [ 'wow', expectedResult ]
+    )
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  it ('should work with predicate functions as the matching value', () => {
+    const expectedResult = 22
+    const result = Method.match(
+      'fooby',
+      [ isStr, expectedResult],
+      [ isArr, 55 ]
+    )
+    expect(result).toEqual(expectedResult)
+  })
+
+  it ('should default to null if no matches were valid', () => {
+    const result = Method.match(
+      'fooby',
+      [ isArr, 12],
+      [ 'barbaz', 55 ]
+    )
+    expect(result).toBeNull()
+  })
+
+  it ('should return null and console error if a case is not an entry', () => {
+    const orig = console.error
+    console.error = jest.fn()
+    const result = Method.match(
+      'fooby',
+      'wow'
+    )
+    expect(console.error).toHaveBeenCalled()
+    expect(result).toBeNull()
+    console.error = orig
+  })
+})
+
+describe('isValid', () => {
+  it ('should validate all entries, returning true if all are valid', () => {
+    const value = 3
+    const isValid = Method.isValid(
+      [ value === 3, 'Error message'],
+      [ value > 2, 'Error message'],
+      [ value !== 1, 'Error message'],
+    )
+    expect(isValid).toBe(true)
+  })
+
+  it ('should return false on the first failure, and it should error log that failure', () => {
+    const orig = console.error
+    console.error = jest.fn()
+    
+    const value = 3
+    const errorLogArgs = ['My message:', 'continued']
+    const isValid = Method.isValid(
+      [ value === 3, 'Error message'],
+      [ value < 2, ...errorLogArgs],
+      [ value < 1, 'message not used'],
+    )
+    expect(isValid).toBe(false)
+    expect(console.error).toHaveBeenCalledTimes(1)
+    expect(console.error).toHaveBeenCalledWith(...errorLogArgs)
+
+    console.error = orig
   })
 })
