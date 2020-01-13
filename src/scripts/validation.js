@@ -60,7 +60,7 @@ const validateArgument = (key, value, validator) => {
 
   // if validator is a named function, use its name. If it is an inline anonymous arrow function, its name
   // matches the argument key and it has no useful/descriptive name, so just stringify it
-  const shouldStringifyValidator = !validator.name || (validator.name === key)
+  const shouldStringifyValidator = !validator.name || (validator.name === key) || (validator.name === '$default')
 
   return {
     success: isValid, 
