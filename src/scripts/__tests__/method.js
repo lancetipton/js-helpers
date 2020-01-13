@@ -545,51 +545,51 @@ describe('/method', () => {
       console.error = orgError
     })
   })
-})
 
-describe('match', () => {
-  it ('should match the first matching case', () => {
-    const expectedResult = 55
+  describe('match', () => {
+    it ('should match the first matching case', () => {
+      const expectedResult = 55
 
-    const matchArg = 'wow'
-    const result = Method.match(
-      matchArg, 
-      [ 'whoa', 1 ],
-      [ 'wow', expectedResult ]
-    )
+      const matchArg = 'wow'
+      const result = Method.match(
+        matchArg, 
+        [ 'whoa', 1 ],
+        [ 'wow', expectedResult ]
+      )
 
-    expect(result).toEqual(expectedResult)
+      expect(result).toEqual(expectedResult)
+    })
+
+    it ('should work with predicate functions as the matching value', () => {
+      const expectedResult = 22
+      const result = Method.match(
+        'fooby',
+        [ isStr, expectedResult ],
+        [ isArr, 55 ]
+      )
+      expect(result).toEqual(expectedResult)
+    })
+
+    it ('should default to null if no matches were valid', () => {
+      const result = Method.match(
+        'fooby',
+        [ isArr, 12],
+        [ 'barbaz', 55 ]
+      )
+      expect(result).toBeNull()
+    })
+
+    it ('should return null and console error if a case is not an entry', () => {
+      const orig = console.error
+      console.error = jest.fn()
+      const result = Method.match(
+        'fooby',
+        'wow'
+      )
+      expect(console.error).toHaveBeenCalled()
+      expect(result).toBeNull()
+      console.error = orig
+    })
+
   })
-
-  it ('should work with predicate functions as the matching value', () => {
-    const expectedResult = 22
-    const result = Method.match(
-      'fooby',
-      [ isStr, expectedResult ],
-      [ isArr, 55 ]
-    )
-    expect(result).toEqual(expectedResult)
-  })
-
-  it ('should default to null if no matches were valid', () => {
-    const result = Method.match(
-      'fooby',
-      [ isArr, 12],
-      [ 'barbaz', 55 ]
-    )
-    expect(result).toBeNull()
-  })
-
-  it ('should return null and console error if a case is not an entry', () => {
-    const orig = console.error
-    console.error = jest.fn()
-    const result = Method.match(
-      'fooby',
-      'wow'
-    )
-    expect(console.error).toHaveBeenCalled()
-    expect(result).toBeNull()
-    console.error = orig
-  })
-
 })
