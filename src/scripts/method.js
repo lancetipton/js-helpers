@@ -6,6 +6,7 @@ import { isArr } from './array'
 import { isNum } from './number'
 import { hasOwn } from './object'
 import { typeOf } from './ext'
+import { isBool } from './boolean'
 
 /**
  * Function for making repeated nested function calls (the 'pipeline') succinct. Passes "item" into
@@ -276,6 +277,7 @@ export const limbo = promise => {
 export const uuid = a => a ? (a ^ Math.random() * 16 >> a / 4).toString(16) : ([ 1e7 ] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g,uuid)
 
 /**
+ * @function
  * Pattern matching function. Iterates through the entries,
  * which have the form [ check value or predicate, return value ], and
  * when it encounters an entry whose check value matches the matchArg, it returns
@@ -302,33 +304,4 @@ export const match = (matchArg, ...entries) => {
     if (caseValueOrPredicate === matchArg) return valueOnMatch
   }
   return null
-}
-
-
-/**
- * Checks each case in the validation cases array. If a case fails, it console.errors the message for that case and returns false
- * If no cases fail, it returns true and does not log.
- * @function
- * @param {Array} validationCases - array of entries, of form [ caseIsValidBool, errorMessageIfInvalidCase ]
- * @returns true if all cases are valid, else false
- */
-export const isValid = (...validationCases) => {
-  const invalidCase = validationCases.find(entry => {
-    return isArr(entry)
-      ? !entry[0] // the boolean indicating whether the case is valid; we negate it for the find function to return the first *invalid* case
-      : !console.error('Expected validation case to be 2-element array entry for isValid function. Found', entry)
-  })
-
-  // no invalid case was found, so the validation is successful
-  if (!invalidCase) return true
-
-  // there was an invalid case
-  const [ _, ...messages ] = invalidCase
-
-  // console its error message
-  isArr(messages) && (messages.length > 0)
-    ? console.error(...messages) // if message was defined as an array
-    : console.error(messages)    // if message was string or anything else
-
-  return false
 }

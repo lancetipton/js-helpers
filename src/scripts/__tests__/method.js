@@ -370,33 +370,3 @@ describe('match', () => {
     console.error = orig
   })
 })
-
-describe('isValid', () => {
-  it ('should validate all entries, returning true if all are valid', () => {
-    const value = 3
-    const isValid = Method.isValid(
-      [ value === 3, 'Error message'],
-      [ value > 2, 'Error message'],
-      [ value !== 1, 'Error message'],
-    )
-    expect(isValid).toBe(true)
-  })
-
-  it ('should return false on the first failure, and it should error log that failure', () => {
-    const orig = console.error
-    console.error = jest.fn()
-    
-    const value = 3
-    const errorLogArgs = ['My message:', 'continued']
-    const isValid = Method.isValid(
-      [ value === 3, 'Error message'],
-      [ value < 2, ...errorLogArgs],
-      [ value < 1, 'message not used'],
-    )
-    expect(isValid).toBe(false)
-    expect(console.error).toHaveBeenCalledTimes(1)
-    expect(console.error).toHaveBeenCalledWith(...errorLogArgs)
-
-    console.error = orig
-  })
-})

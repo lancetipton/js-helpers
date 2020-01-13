@@ -2,9 +2,10 @@
 
 'use strict'
 
-const { isNum } = require('./number')
+const { isNonNegative } = require('./number')
 const { isObj } = require('./object')
-const { isFunc, isValid } = require('./method')
+const { isFunc } = require('./method')
+const { validate } = require('./validation')
 const { typeOf } = require('./ext')
 
 /**
@@ -93,12 +94,12 @@ export const cloneArr = arr => (
  * @param {Number} count 
  */
 export const omitRange = (arr, startIndex, count) => {
-  const valid = isValid(
-    [ isArr(arr), `omitRange expected Array. Found ${typeof arr}`],
-    [ isNum(startIndex) && startIndex >= 0 , `omitRange expected non-negative startIndex. Found ${startIndex}` ],
-    [ isNum(count) && count >= 0, `omitRange expected non-negative count. Found ${count}`]
+  const inputIsValid = validate(
+    { arr, startIndex, count },
+    { arr: isArr, $default: isNonNegative }
   )
-  if (!valid) return arr
+
+  if (!inputIsValid) return arr
 
   const nextArr = [ ...arr ]
 
@@ -119,19 +120,22 @@ export const omitRange = (arr, startIndex, count) => {
  * @param {Function} mapFn - function for mapping
  */
 export const flatMap = (arr, mapFn) => {
-  return isValid(
-      [ isArr(arr), `Expected arr to be an array. Found: ${typeOf(arr)}`, arr ],
-      [ isFunc(mapFn), `Expected mapFn to be a function. Found: ${typeOf(mapFn)}`, mapFn ])
-    ? arr.reduce(
-      (finalArr, current) => {
-        const result = mapFn(current)
-        isArr(result)
-          ? result.map(el => finalArr.push(el))
-          : finalArr.push(result)
-        return finalArr
-      },
-      []
-    )
-    : arr // if not valid, just return the array
+  const inputIsValid = validate(
+    { arr, mapFn },
+    { arr: isArr, mapFn: isFunc }
+  )
+  if (!inputIsValid) return arr;
+
+  // iterate across the array, calling mapFn on each element, then flattening into final array
+  return arr.reduce(
+    (finalArr, current) => {
+      const result = mapFn(current)
+      isArr(result)
+        ? result.map(el => finalArr.push(el))
+        : finalArr.push(result)
+      return finalArr
+    },
+    []
+  )
 }
 
