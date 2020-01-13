@@ -41,6 +41,7 @@ export const validate = (argObj, validators={}) => {
 
   // error log the reasons for failed validation, if any
   !success && reasons.map(reason => console.error(...reason))
+  !success && console.trace()
 
   return success
 }

@@ -17,7 +17,7 @@ describe('validate', () => {
     expect(isValid).toBe(true)
   })
 
-  it ('should false for a failure, and it should error log that failure', () => {
+  it ('should return false for a failure, and it should error log that failure', () => {
     const orig = console.error
     console.error = jest.fn()
 
@@ -33,7 +33,7 @@ describe('validate', () => {
 
     
     expect(isValid).toBe(false)
-    expect(console.error).toHaveBeenCalledTimes(3)
+    expect(console.error).toHaveBeenCalledTimes(4)
 
     console.error = orig
   })
