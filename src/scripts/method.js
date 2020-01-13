@@ -282,13 +282,23 @@ export const uuid = a => a ? (a ^ Math.random() * 16 >> a / 4).toString(16) : ([
  * which have the form [ check value or predicate, return value ], and
  * when it encounters an entry whose check value matches the matchArg, it returns
  * the return value of that entry (its second element)
- * @example const someArgument = 1
- * const foo = match(
- *  someArgument,
+ * @example 
+ * const value = 1
+ * match(
+ *  value,
  *  [ 1, "hello" ],
- *  [ match => match > 2, () => doSomething() + 1 ] 
+ *  [ x => x > 2, "greater" ] 
  * ) 
- * => foo is "hello"
+ * => returns "hello"
+ * 
+ * const value = 3
+ * match(
+ *  value,
+ *  [ 1, "hello" ],
+ *  [ x => x > 2, "greater" ] 
+ * ) 
+ * => returns "greater"
+ 
  * @param {*} matchArg 
  * @param {Array} entries 
  * @returns the return value of the first entry with a matching check value, else null

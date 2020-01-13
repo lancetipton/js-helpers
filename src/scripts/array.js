@@ -6,7 +6,6 @@ const { isNonNegative } = require('./number')
 const { isObj } = require('./object')
 const { isFunc } = require('./method')
 const { validate } = require('./validation')
-const { typeOf } = require('./ext')
 
 /**
  * Randomly selects values from a passed in array.

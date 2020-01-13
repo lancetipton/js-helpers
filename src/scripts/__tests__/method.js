@@ -332,7 +332,7 @@ describe('match', () => {
     const matchArg = 'wow'
     const result = Method.match(
       matchArg, 
-      [ 'whoa', () => 1 ],
+      [ 'whoa', 1 ],
       [ 'wow', expectedResult ]
     )
 
@@ -343,7 +343,7 @@ describe('match', () => {
     const expectedResult = 22
     const result = Method.match(
       'fooby',
-      [ isStr, expectedResult],
+      [ isStr, expectedResult ],
       [ isArr, 55 ]
     )
     expect(result).toEqual(expectedResult)
