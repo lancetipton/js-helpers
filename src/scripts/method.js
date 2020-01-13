@@ -164,20 +164,22 @@ export const isFunc = func => typeof func === 'function'
  * @function
  * @param {function} func - method to memorize output of
  * @param {function} getCacheKey - gets the key to save cached output
+ *
  * @return {function} memorized function with cache
  */
 export const memorize = (func, getCacheKey, limit=1) => {
     if (!isFunc(func) || (getCacheKey && !isFunc(getCacheKey)))
-      throw new TypeError('Expected a function')
+      return console.error('Error: Expected a function', func, getCacheKey)
 
-    const memorized = function() {
+    let memorized = function() {
       const cache = memorized.cache
-      const key = getCacheKey ? getCacheKey.apply(this, arguments) : arguments[0]
+      const key = getCacheKey ? getCacheKey.apply(this,  arguments) : arguments[0]
 
       if (hasOwn(cache, key)) return cache[key]
 
       const result = func.apply(this, arguments)
-      !isNum(limit) || Object.key(cache).length < limit
+
+      isNum(limit) && Object.keys(cache).length < limit
         ? (cache[key] = result)
         : (memorized.cache = { [key]: result })
 
@@ -277,32 +279,61 @@ export const limbo = promise => {
 export const uuid = a => a ? (a ^ Math.random() * 16 >> a / 4).toString(16) : ([ 1e7 ] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g,uuid)
 
 /**
+ * Clones a function using the Function constructor and calling toString on the passed in function
+ * @example
+ * const func = () => { console.log('test') }
+ * const clone = cloneFunc(func)
+ * // clone !== func
  * @function
- * Pattern matching function. Iterates through the entries,
- * which have the form [ check value or predicate, return value ], and
- * when it encounters an entry whose check value matches the matchArg, it returns
- * the return value of that entry (its second element)
- * @example 
- * const value = 1
- * match(
- *  value,
- *  [ 1, "hello" ],
- *  [ x => x > 2, "greater" ] 
- * ) 
- * => returns "hello"
- * 
- * const value = 3
- * match(
- *  value,
- *  [ 1, "hello" ],
- *  [ x => x > 2, "greater" ] 
- * ) 
- * => returns "greater"
- 
- * @param {*} matchArg 
- * @param {Array} entries 
- * @returns the return value of the first entry with a matching check value, else null
+ * @param {function} func - function to clone
+ *
+ * @returns {Object} cloned function
  */
+export const cloneFunc = func => {
+  const funcRef = func
+  const funcWrap = (...args) => new funcRef(...args)
+
+  const funcClone = (...args) => {
+    return func instanceof funcClone
+      ? funcWrap.apply(null, args)
+      : funcRef.apply(func, args)
+  }
+
+  for(let key in func )
+    func.hasOwnProperty(key) && (funcClone[key] = func[key])
+  
+  Object.defineProperty(funcClone, 'name', { value: func.name, configurable: true })
+  funcClone.toString = () => func.toString()
+
+  return funcClone
+}
+
+/**
+* @function
+* Pattern matching function. Iterates through the entries,
+* which have the form [ check value or predicate, return value ], and
+* when it encounters an entry whose check value matches the matchArg, it returns
+* the return value of that entry (its second element)
+* @example 
+* const value = 1
+* match(
+*  value,
+*  [ 1, "hello" ],
+*  [ x => x > 2, "greater" ] 
+* ) 
+* => returns "hello"
+* 
+* const value = 3
+* match(
+*  value,
+*  [ 1, "hello" ],
+*  [ x => x > 2, "greater" ] 
+* ) 
+* => returns "greater"
+* @param {*} matchArg 
+* @param {Array} entries 
+* @returns the return value of the first entry with a matching check value, else null
+*/
 export const match = (matchArg, ...entries) => {
   for (let entry of entries) {
     if (!isArr(entry)) {
