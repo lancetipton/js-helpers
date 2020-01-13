@@ -45,7 +45,7 @@ describe('validate', () => {
 
     const isValid = validate({ x, y, z }, { 
       $default: isNum,
-      z: isStr
+      z: isStr,
     })
 
     expect(isValid).toBe(true)

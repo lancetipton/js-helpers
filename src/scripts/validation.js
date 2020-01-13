@@ -32,8 +32,9 @@ export const validate = (argObj, validators={}) => {
     )
   )
 
-  // reduce the argument validation results into a single object of form { success, message }.
-  // success is true if all arguments passed their validators. Message is the accumulation of each validator's message.
+  // reduce the argument validation results into a single object of form { success, reasons }.
+  // success is true if all arguments passed their validators. Reasons is an array of error messages
+  // for each failed validation.
   const { success, reasons } = validationResults.reduce(
     validationReducer,
     { success: true, reasons: [] }
@@ -57,13 +58,16 @@ export const validate = (argObj, validators={}) => {
 const validateArgument = (key, value, validator) => {
   const isValid = validator(value) 
 
+  // if validator is a named function, use its name. If it is an inline anonymous arrow function, its name
+  // matches the argument key and it has no useful/descriptive name, so just stringify it
+  const shouldStringifyValidator = !validator.name || (validator.name === key)
+
   return {
     success: isValid, 
     reason: !isValid && [
       `Argument "${key}" with value`, 
       value, 
-      // if validator is a named function, use its name. If it is an inline anonymous arrow function, it has no name, so just stringify it
-      `failed validator: ${validator.name || validator.toString()}.`
+      `failed validator: ${ shouldStringifyValidator ? validator.toString() : validator.name }.`
     ]
   }
 }
