@@ -594,5 +594,10 @@ describe('/method', () => {
       )
       expect(result).toEqual(expectedResult)
     })
+
+    it ('should return null with no cases defined', () => {
+      const result = Method.match('my arg')()
+      expect(result).toBeNull()
+    })
   })
 })

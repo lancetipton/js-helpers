@@ -355,6 +355,8 @@ export const match = (matchArg) => {
    * @returns the return value of the first entry with a matching check value, else null
    */
   return (...args) => {
+    if (!args.length) return null
+
     // separate out the default fallback if one is defined
     const hasFallback = !isArr(args[args.length - 1])
     const cases = hasFallback ? args.slice(0, args.length - 1) : args
