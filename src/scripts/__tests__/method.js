@@ -568,7 +568,7 @@ describe('/method', () => {
       expect(result).toEqual(expectedResult)
     })
 
-    it ('should default to null if no matches were valid, and no fallback was specified', () => {
+    it ('should default to null if no matches were valid and no fallback was specified', () => {
       const result = Method.match('fooby')(
         [ isArr, 12],
         [ 'barbaz', 55 ]
