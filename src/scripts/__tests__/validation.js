@@ -33,7 +33,7 @@ describe('validate', () => {
 
     
     expect(isValid).toBe(false)
-    expect(console.error).toHaveBeenCalledTimes(4)
+    expect(console.error).toHaveBeenCalledTimes(3)
 
     console.error = orig
   })

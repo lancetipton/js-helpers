@@ -3,9 +3,8 @@
  *  Validates each key-value entry in argObj using the validator functions in validators with matching keys. 
  *  For any failures, validate will console.error the reason.
  *  @param { Object } argObj - object, where keys are the name of the argument to validate, and value is its value
- *  @param { Object } validators - object, where keys match the argument and values are predicate functions. 
- *     - Accept the associated arg as input and return true or false for validation.
- *     - Use the `$default` key to define a default validator. Validate will use isStr if this isn't defined by user
+ *  @param { Object } validators - object, where keys match the argument and values are predicate functions (return true/false and are passed the arg with the same key). 
+ *     - Use the `$default` key to define a default validator, which will validate any argument that doesn't have a custom validator defined.
  *  @returns - true if all arguments passed their validators, false otherwise
  *  @example 
  *    const elements = {}
@@ -42,7 +41,6 @@ export const validate = (argObj, validators={}) => {
 
   // error log the reasons for failed validation, if any
   !success && reasons.map(reason => console.error(...reason))
-  !success && console.trace()
 
   return success
 }
