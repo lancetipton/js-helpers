@@ -312,37 +312,68 @@ export const cloneFunc = func => {
 * @function
 * Pattern matching function. Iterates through the entries,
 * which have the form [ check value or predicate, return value ], and
-* when it encounters an entry whose check value matches the matchArg, it returns
+* when it encounters an entry whose check value matches the matchArg
+* (or the predicate returns true when passed the matchArg), it returns
 * the return value of that entry (its second element)
+* @param {*} matchArg 
+* @returns the function that accepts the cases and (optional) fallback
+*
 * @example 
 * const value = 1
-* match(
-*  value,
+* match(value)(
 *  [ 1, "hello" ],
 *  [ x => x > 2, "greater" ] 
 * ) 
 * => returns "hello"
 * 
+* @example 
 * const value = 3
-* match(
-*  value,
+* match(value)(
 *  [ 1, "hello" ],
 *  [ x => x > 2, "greater" ] 
 * ) 
 * => returns "greater"
-* @param {*} matchArg 
-* @param {Array} entries 
-* @returns the return value of the first entry with a matching check value, else null
+*
+* @example 
+* // react reducer:
+*function todoReducer(state, action) {
+*   const reducer = match(action.type)(
+*       [ 'ADD-TODO', addTodo ],
+*       [ 'REMOVE-TODO', removeTodo ],
+*       [ 'UPDATE-TODO', updateTodo ],
+*       state // default
+*   )
+*
+*   return reducer(state, action)
+*}
 */
-export const match = (matchArg, ...entries) => {
-  for (let entry of entries) {
-    if (!isArr(entry)) {
-      console.error(`Matching case must be an entry (a 2-element array). Found: ${typeOf(entry)}`, entry)
-      return null
+export const match = (matchArg) => {
+  /**
+   * The matching function.
+   * @param {Array} entries - the cases
+   * @param {*} fallback (optional) fallback default
+   * @returns the return value of the first entry with a matching check value, else null
+   */
+  return (...args) => {
+    // separate out the default fallback if one is defined
+    const hasFallback = !isArr(args[args.length - 1])
+    const cases = hasFallback ? args.slice(0, args.length - 1) : args
+    const fallback = hasFallback ? args[args.length - 1] : null
+
+    // check all cases and return a value if a match is found
+    for (let entry of cases) {
+      if (!isArr(entry)) {
+        console.error(`Matching case must be an entry (a 2-element array). Found: ${typeOf(entry)}`, entry)
+        break
+      }
+      const [ caseValueOrPredicate, valueOnMatch ] = entry
+      if (isFunc(caseValueOrPredicate) && caseValueOrPredicate(matchArg)) return valueOnMatch
+      if (caseValueOrPredicate === matchArg) return valueOnMatch
     }
-    const [ caseValueOrPredicate, valueOnMatch ] = entry
-    if (isFunc(caseValueOrPredicate) && caseValueOrPredicate(matchArg)) return valueOnMatch
-    if (caseValueOrPredicate === matchArg) return valueOnMatch
+
+    return fallback
   }
-  return null
+}
+
+export const parseArgs = (args) => {
 }
