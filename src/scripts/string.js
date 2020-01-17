@@ -1,9 +1,8 @@
-import { isFunc } from './method'
-
-/** @module string */
-const { mapEntries, isObj } = require('./object')
-
 'use strict'
+/** @module string */
+
+import { isFunc, pipeline } from './method'
+import { validate } from './validation'
 
 /**
  * Builds a string path from passed in args ( i.e. path/to/thing ).
@@ -337,3 +336,47 @@ export const isUpperCase = str => (str === str.toUpperCase())
  * @param {String} str 
  */
 export const isLowerCase = str => (str === str.toLowerCase())
+
+/**
+ * Returns true if aString equals bString after applying the functions in criteriaFuncs 
+ * @param {String} aString
+ * @param {String} bString 
+ * @param {Array} criteriaFuncs functions which transform aString and bString before the comparison
+ * @example stringsMatch("abc", "ÁBC", [ignoreCase, ignoreAccents]) // returns true
+ */
+export const stringsMatch = (aString, bString, criteriaFuncs=[]) => {
+  const valid = validate({ aString, bString },{ $default: isStr })
+  if (!valid) return false
+
+  const aTransformed = pipeline(aString, ...criteriaFuncs)
+  const bTransformed = pipeline(bString, ...criteriaFuncs)
+  return (aTransformed === bTransformed)
+}
+
+/**
+ * Returns true if aString includes bString as a substring after applying the functions in criteriaFuncs 
+ * @param {String} aString
+ * @param {String} bString 
+ * @param {Array} criteriaFuncs functions which transform aString and bString before the substring check
+ * @example stringIncludes("I can say my abcs all day", "ÁBC", [ ignoreCase, ignoreAccents ]) // returns true
+ */
+export const stringIncludes = (aString, bString, criteriaFuncs=[]) => {
+  const valid = validate({ aString, bString },{ $default: isStr })
+  if (!valid) return false
+
+  const a = pipeline(aString, ...criteriaFuncs)
+  const b = pipeline(bString, ...criteriaFuncs)
+  return a.includes(b)
+}
+
+/**
+ * @returns String s in lower case
+ * @param {String} s 
+ */
+export const ignoreCase = (s) => s.toLowerCase()
+
+/**
+ * @returns String s normalized without accent marks, so Á is converted to A
+ * @param {String} s 
+ */
+export const ignoreAccents = (s) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '')

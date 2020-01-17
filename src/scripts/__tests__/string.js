@@ -295,4 +295,46 @@ describe('/string', () => {
     })
   })
 
+  describe("stringsMatch", () => {
+    it("should return true for valid matches, false otherwise", () => {
+      expect(Str.stringsMatch("abc", "abc")).toBe(true)
+      expect(Str.stringsMatch("abc", "kabc")).toBe(false)
+    })
+
+    it("should work with ignoreCase", () => {
+      const match = Str.stringsMatch("abc", "ABC", [Str.ignoreCase])
+      expect(match).toBe(true)
+      const badMatch = Str.stringsMatch("abc", "BBC", [Str.ignoreCase])
+      expect(badMatch).toBe(false)
+    })
+
+    it("should work with ignoreAccents", () => {
+      const match = Str.stringsMatch("ABC", "ÁBC", [Str.ignoreAccents])
+      expect(match).toBe(true)
+      const badMatch = Str.stringsMatch("ABK", "ÁBC", [Str.ignoreAccents])
+      expect(badMatch).toBe(false)
+    })
+  })
+
+  describe("stringIncludes", () => {
+    it("should return true for valid substrings, false otherwise", () => {
+      expect(Str.stringIncludes("abc", "bc")).toBe(true)
+      expect(Str.stringIncludes("abc", "abc")).toBe(true)
+      expect(Str.stringIncludes("abc", "kabc")).toBe(false)
+    })
+
+    it("should work with ignoreCase", () => {
+      const match = Str.stringIncludes("abc", "ABC", [Str.ignoreCase])
+      expect(match).toBe(true)
+      const badMatch = Str.stringIncludes("abc", "BBC", [Str.ignoreCase])
+      expect(badMatch).toBe(false)
+    })
+
+    it("should work with ignoreAccents", () => {
+      const match = Str.stringIncludes("ABC", "ÁBC", [Str.ignoreAccents])
+      expect(match).toBe(true)
+      const badMatch = Str.stringIncludes("ABK", "ÁBC", [Str.ignoreAccents])
+      expect(badMatch).toBe(false)
+    })
+  })
 })
