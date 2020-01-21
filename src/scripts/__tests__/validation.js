@@ -1,7 +1,9 @@
-const { validate } = require('../validation')
+const { validate, setValidationOptions, resetValidationOptions } = require('../validation')
 const { isArr } = require('../array')
 const { isStr } = require('../string')
 const { isNum } = require('../number')
+
+const { mockConsole } = require('jestlib')
 
 describe('validate', () => {
   it ('should validate all conditions, returning true if all are valid', () => {
@@ -18,8 +20,7 @@ describe('validate', () => {
   })
 
   it ('should return false for a failure, and it should error log that failure', () => {
-    const orig = console.error
-    console.error = jest.fn()
+    const resetMocks = mockConsole(['error'])
 
     const x = 3
     const y = 1
@@ -35,7 +36,7 @@ describe('validate', () => {
     expect(isValid).toBe(false)
     expect(console.error).toHaveBeenCalledTimes(3)
 
-    console.error = orig
+    resetMocks()
   })
 
   it ('should work with the $default parameter', () => {
@@ -52,8 +53,7 @@ describe('validate', () => {
   })
 
   it ('should return failed cases object', () => {
-    const orig = console.error
-    console.error = jest.fn()
+    const resetMocks = mockConsole(['error'])
 
     const x = 3
     const y = 1
@@ -71,7 +71,41 @@ describe('validate', () => {
     expect(isValid).toBe(false)
     expect(console.error).toHaveBeenCalledTimes(3)
 
-    console.error = orig
+    resetMocks()
   })
 
+  it ('should be configurable by the options argument', () => {
+    const resetMocks = mockConsole(['error'])
+    const x = 3
+    const y = 1
+    const z = 'wow' 
+
+    validate(
+      { x, y, z },
+      { x: x => x < 0 },
+      { logs: false }
+    )
+    expect(() => validate({ x }, { x: x => x < 0 }, { throws: true })).toThrow()
+
+    expect(console.error).toHaveBeenCalledTimes(0)
+    resetMocks()
+  })
+
+  it ('should handle global configuration of options', () => {
+    setValidationOptions({ throws: true, logs: false, prefix: '123' })    
+    const x = 1
+    expect(() => validate({ x }, { x: x => x < 0 }, { throws: true })).toThrow()
+
+    resetValidationOptions()
+    
+    const options = { prefix: '123' }
+    setValidationOptions(options)    
+
+    const resetMocks = mockConsole(['error'])
+    validate({ x }, { x: isArr })
+    expect(console.error).toHaveBeenCalled()
+    expect(console.error).toHaveBeenCalledWith(options.prefix, "Argument \"x\" with value ", 1, " failed validator: isArr." )
+
+    resetMocks()
+  })
 })

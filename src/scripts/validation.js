@@ -1,4 +1,39 @@
-import { mapObj } from './object'
+import { isEmpty } from './ext'
+
+const OPTIONS = {
+  SHOULD_LOG: true,
+  SHOULD_THROW: false,
+  LOG_PREFIX: null
+}
+/**
+ * If you need to configure validation properties globally, you can do so here. These are overridden by the validate options arguments,
+ * if one is defined in validate().
+ * @param {Object} options 
+ * @param {Object} options.logs - boolean indicating you want validate() to log errors when a case fails
+ * @param {Object} options.throws - boolean indicating validate() should throw an error when a case fails
+ * @param {String} options.prefix - a prefix to any console error logs or to messages of errors thrown
+ */
+export const setValidationOptions = ({ logs, throws, prefix }) => {
+  if (logs !== undefined) {
+    OPTIONS.SHOULD_LOG = logs
+  }
+  if (throws !== undefined) {
+    OPTIONS.SHOULD_THROW = throws
+  }
+  if (prefix !== undefined) {
+    OPTIONS.LOG_PREFIX = prefix
+  }
+}
+
+/**
+ * Resets the global validation options to their defaults
+ */
+export const resetValidationOptions = () => {
+  OPTIONS.SHOULD_LOG = true
+  OPTIONS.SHOULD_THROW = false
+  OPTIONS.LOG_PREFIX = null
+}
+
 /** 
  * @function
  *  Validates each key-value entry in argObj using the validator functions in validators with matching keys. 
@@ -6,6 +41,7 @@ import { mapObj } from './object'
  *  @param { Object } argObj - object, where keys are the name of the argument to validate, and value is its value
  *  @param { Object } validators - object, where keys match the argument and values are predicate functions (return true/false and are passed the arg with the same key). 
  *     - Use the `$default` key to define a default validator, which will validate any argument that doesn't have a custom validator defined.
+ *  @param { Object } options - contains `logs` and `throws` props. When a validation fails, it will throw an error if `throws` is true. Else it logs error if `logs` is true.
  *  @returns - an entry with two values [ success, results ]. 
  *     - success: { Boolean } that is true if all arguments passed their validators, false otherwise
  *     - results: { Object } that holds the validation results for each argument, keyed by the same keys as in argObj. For each
@@ -21,7 +57,7 @@ import { mapObj } from './object'
  *    console.log(isValid) // false
  *    console.log(results.elements.success) // false
  */
-export const validate = (argObj, validators={}) => {
+export const validate = (argObj, validators={}, { logs=OPTIONS.SHOULD_LOG, throws=OPTIONS.SHOULD_THROW, prefix=OPTIONS.LOG_PREFIX }={}) => {
   const validationCaseEntries = Object.entries(argObj)
 
   // if no default or custom validator set for an arg, just assert it is valid
@@ -38,10 +74,8 @@ export const validate = (argObj, validators={}) => {
 
   // reduce the argument validation results into a single object of form { success, cases }.
   // success is true if all arguments passed their validators. Cases holds each argument's validation results.
-  const { success, cases } = validationResults.reduce(
-    validationReducer,
-    { success: true, cases: {} }
-  )
+  const reduceCases = (total, next) => validationReducer(total, next, { logs, throws, prefix })
+  const { success, cases } = validationResults.reduce(reduceCases, { success: true, cases: {} })
 
   return [ success, cases ]
 }
@@ -78,9 +112,9 @@ const validateArgument = (key, value, validator) => {
  * @param {*} finalResult 
  * @param {*} nextValidation 
  */
-const validationReducer = (finalResult, nextValidation) => {
-  // error log the reasons for failed validation, if any
-  !nextValidation.success && console.error(...nextValidation.reason)
+const validationReducer = (finalResult, nextValidation, { logs, throws, prefix }) => {
+  // handle the failure
+  !nextValidation.success && handleFailure(nextValidation, logs, throws, prefix)
 
   return {
     success: finalResult.success && nextValidation.success,
@@ -89,4 +123,23 @@ const validationReducer = (finalResult, nextValidation) => {
       [nextValidation.key]: nextValidation
     }
   }
+}
+
+/**
+ * Handles a validation failure given validation options
+ * @param {Object} validation 
+ * @param {Boolean} shouldLog 
+ * @param {Boolean} shouldThrow 
+ * @param {String} prefix - optional prefix to any error or console log 
+ */
+const handleFailure = (validation, shouldLog, shouldThrow, prefix) => {
+  const reason = prefix
+    ? [ prefix, ...validation.reason ]
+    : validation.reason
+
+  if (shouldThrow)
+    throw new Error(reason.join())
+  
+  if (shouldLog)
+    console.error(...reason)
 }
