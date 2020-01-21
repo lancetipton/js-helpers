@@ -1,4 +1,4 @@
-const { validate, setValidationOptions, resetValidationOptions } = require('../validation')
+const { validate } = require('../validation')
 const { isArr } = require('../array')
 const { isStr } = require('../string')
 const { isNum } = require('../number')
@@ -92,14 +92,14 @@ describe('validate', () => {
   })
 
   it ('should handle global configuration of options', () => {
-    setValidationOptions({ throws: true, logs: false, prefix: '123' })    
+    validate.setOptions({ throws: true, logs: false, prefix: '123' })    
     const x = 1
     expect(() => validate({ x }, { x: x => x < 0 }, { throws: true })).toThrow()
 
-    resetValidationOptions()
+    validate.resetOptions()
     
     const options = { prefix: '123' }
-    setValidationOptions(options)    
+    validate.setOptions(options)    
 
     const resetMocks = mockConsole(['error'])
     validate({ x }, { x: isArr })

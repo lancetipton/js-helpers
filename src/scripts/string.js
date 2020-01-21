@@ -1,7 +1,6 @@
 import { isFunc } from './method'
 
 /** @module string */
-const { mapEntries, isObj } = require('./object')
 
 'use strict'
 

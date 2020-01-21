@@ -1,37 +1,9 @@
+/** @module validation */
+
 const OPTIONS = {
   SHOULD_LOG: true,
   SHOULD_THROW: false,
   LOG_PREFIX: null
-}
-/**
- * @function
- * If you need to configure validation properties globally, you can do so here. These are overridden by the validate options arguments,
- * if one is defined in validate().
- * @param {Object} options 
- * @param {Object} options.logs - boolean indicating you want validate() to log errors when a case fails
- * @param {Object} options.throws - boolean indicating validate() should throw an error when a case fails
- * @param {String} options.prefix - a prefix to any console error logs or to messages of errors thrown
- */
-export const setValidationOptions = ({ logs, throws, prefix }) => {
-  if (logs !== undefined) {
-    OPTIONS.SHOULD_LOG = logs
-  }
-  if (throws !== undefined) {
-    OPTIONS.SHOULD_THROW = throws
-  }
-  if (prefix !== undefined) {
-    OPTIONS.LOG_PREFIX = prefix
-  }
-}
-
-/**
- * @function
- * Resets the global validation options to their defaults
- */
-export const resetValidationOptions = () => {
-  OPTIONS.SHOULD_LOG = true
-  OPTIONS.SHOULD_THROW = false
-  OPTIONS.LOG_PREFIX = null
 }
 
 /** 
@@ -80,6 +52,36 @@ export const validate = (argObj, validators={}, { logs=OPTIONS.SHOULD_LOG, throw
   return [ success, cases ]
 }
 
+/**
+ * @function
+ * If you need to configure validation properties globally, you can do so here. These are overridden by the validate options arguments,
+ * if one is defined in validate().
+ * @param {Object} options 
+ * @param {Boolean} options.logs - indicates you want validate() to log errors when a case fails
+ * @param {Boolean} options.throws - indicates validate() should throw an error when a case fails
+ * @param {String} options.prefix - a prefix to any console error logs or to messages of errors thrown
+ */
+validate.setOptions = ({ logs, throws, prefix }) => {
+  if (logs !== undefined) {
+    OPTIONS.SHOULD_LOG = logs
+  }
+  if (throws !== undefined) {
+    OPTIONS.SHOULD_THROW = throws
+  }
+  if (prefix !== undefined) {
+    OPTIONS.LOG_PREFIX = prefix
+  }
+}
+
+/**
+ * @function
+ * Resets the global validation options to their defaults
+ */
+validate.resetOptions = () => {
+  OPTIONS.SHOULD_LOG = true
+  OPTIONS.SHOULD_THROW = false
+  OPTIONS.LOG_PREFIX = null
+}
 
 /**
  * Helper for `validate`. Validates a single value given a validator

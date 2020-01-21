@@ -2,10 +2,10 @@
 
 'use strict'
 
-const { isNonNegative } = require('./number')
-const { isObj } = require('./object')
-const { isFunc } = require('./method')
-const { validate } = require('./validation')
+import { isNonNegative } from './number'
+import { isObj } from './object'
+import { isFunc } from './method'
+import { validate } from './validation'
 
 /**
  * Randomly selects values from a passed in array.

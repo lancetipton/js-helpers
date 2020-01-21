@@ -6,7 +6,6 @@ import { isArr } from './array'
 import { isNum } from './number'
 import { hasOwn } from './object'
 import { typeOf } from './ext'
-import { isBool } from './boolean'
 
 /**
  * Function for making repeated nested function calls (the 'pipeline') succinct. Passes "item" into
