@@ -551,7 +551,7 @@ describe('/method', () => {
       const expectedResult = 55
 
       const matchArg = 'wow'
-      const result = Method.match(matchArg)(
+      const result = Method.match(matchArg,
         [ 'whoa', 1 ],
         [ 'wow', expectedResult ]
       )
@@ -561,7 +561,7 @@ describe('/method', () => {
 
     it ('should work with predicate functions as the matching value', () => {
       const expectedResult = 22
-      const result = Method.match('fooby')(
+      const result = Method.match('fooby',
         [ isStr, expectedResult ],
         [ isArr, 55 ]
       )
@@ -569,7 +569,7 @@ describe('/method', () => {
     })
 
     it ('should default to null if no matches were valid and no fallback was specified', () => {
-      const result = Method.match('fooby')(
+      const result = Method.match('fooby',
         [ isArr, 12],
         [ 'barbaz', 55 ]
       )
@@ -579,7 +579,7 @@ describe('/method', () => {
     it ('should console error if a case is not an entry', () => {
       const orig = console.error
       console.error = jest.fn()
-      const result = Method.match('fooby')('wow', 'fallback')
+      const result = Method.match('fooby', 'wow', 'fallback')
       expect(console.error).toHaveBeenCalled()
       expect(result).toEqual('fallback')
       console.error = orig
@@ -587,7 +587,7 @@ describe('/method', () => {
 
     it ('should return the fallback if no cases match', () => {
       const expectedResult = 22
-      const result = Method.match(1)(
+      const result = Method.match(1,
         [ isStr, 33 ],
         [ isArr, 55 ],
         expectedResult
@@ -596,7 +596,7 @@ describe('/method', () => {
     })
 
     it ('should return null with no cases defined', () => {
-      const result = Method.match('my arg')()
+      const result = Method.match('my arg')
       expect(result).toBeNull()
     })
   })

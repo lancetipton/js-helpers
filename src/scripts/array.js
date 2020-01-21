@@ -93,7 +93,7 @@ export const cloneArr = arr => (
  * @param {Number} count 
  */
 export const omitRange = (arr, startIndex, count) => {
-  const inputIsValid = validate(
+  const [ inputIsValid ] = validate(
     { arr, startIndex, count },
     { arr: isArr, $default: isNonNegative }
   )
@@ -119,7 +119,7 @@ export const omitRange = (arr, startIndex, count) => {
  * @param {Function} mapFn - function for mapping
  */
 export const flatMap = (arr, mapFn) => {
-  const inputIsValid = validate(
+  const [ inputIsValid ] = validate(
     { arr, mapFn },
     { arr: isArr, mapFn: isFunc }
   )

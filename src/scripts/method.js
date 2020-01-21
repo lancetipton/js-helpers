@@ -316,11 +316,13 @@ export const cloneFunc = func => {
 * (or the predicate returns true when passed the matchArg), it returns
 * the return value of that entry (its second element)
 * @param {*} matchArg 
-* @returns the function that accepts the cases and (optional) fallback
+* @param {Array} entries - the cases
+* @param {*} fallback (optional) fallback default
+* @returns the return value of the first entry with a matching check value, else null
 *
 * @example 
 * const value = 1
-* match(value)(
+* match(value,
 *  [ 1, "hello" ],
 *  [ x => x > 2, "greater" ] 
 * ) 
@@ -328,7 +330,7 @@ export const cloneFunc = func => {
 * 
 * @example 
 * const value = 3
-* match(value)(
+* match(value,
 *  [ 1, "hello" ],
 *  [ x => x > 2, "greater" ] 
 * ) 
@@ -337,7 +339,7 @@ export const cloneFunc = func => {
 * @example 
 * // react reducer:
 *function todoReducer(state, action) {
-*   const reducer = match(action.type)(
+*   const reducer = match(action.type,
 *       [ 'ADD-TODO', addTodo ],
 *       [ 'REMOVE-TODO', removeTodo ],
 *       [ 'UPDATE-TODO', updateTodo ],
@@ -347,35 +349,24 @@ export const cloneFunc = func => {
 *   return reducer(state, action)
 *}
 */
-export const match = (matchArg) => {
-  /**
-   * The matching function.
-   * @param {Array} entries - the cases
-   * @param {*} fallback (optional) fallback default
-   * @returns the return value of the first entry with a matching check value, else null
-   */
-  return (...args) => {
-    if (!args.length) return null
+export const match = (matchArg, ...args) => {
+  if (!args.length) return null
 
-    // separate out the default fallback if one is defined
-    const hasFallback = !isArr(args[args.length - 1])
-    const cases = hasFallback ? args.slice(0, args.length - 1) : args
-    const fallback = hasFallback ? args[args.length - 1] : null
+  // separate out the default fallback if one is defined
+  const hasFallback = !isArr(args[args.length - 1])
+  const cases = hasFallback ? args.slice(0, args.length - 1) : args
+  const fallback = hasFallback ? args[args.length - 1] : null
 
-    // check all cases and return a value if a match is found
-    for (let entry of cases) {
-      if (!isArr(entry)) {
-        console.error(`Matching case must be an entry (a 2-element array). Found: ${typeOf(entry)}`, entry)
-        break
-      }
-      const [ caseValueOrPredicate, valueOnMatch ] = entry
-      if (isFunc(caseValueOrPredicate) && caseValueOrPredicate(matchArg)) return valueOnMatch
-      if (caseValueOrPredicate === matchArg) return valueOnMatch
+  // check all cases and return a value if a match is found
+  for (let entry of cases) {
+    if (!isArr(entry)) {
+      console.error(`Matching case must be an entry (a 2-element array). Found: ${typeOf(entry)}`, entry)
+      break
     }
-
-    return fallback
+    const [ caseValueOrPredicate, valueOnMatch ] = entry
+    if (isFunc(caseValueOrPredicate) && caseValueOrPredicate(matchArg)) return valueOnMatch
+    if (caseValueOrPredicate === matchArg) return valueOnMatch
   }
-}
 
-export const parseArgs = (args) => {
+  return fallback
 }
