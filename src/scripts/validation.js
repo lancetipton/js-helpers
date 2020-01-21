@@ -1,11 +1,10 @@
-import { isEmpty } from './ext'
-
 const OPTIONS = {
   SHOULD_LOG: true,
   SHOULD_THROW: false,
   LOG_PREFIX: null
 }
 /**
+ * @function
  * If you need to configure validation properties globally, you can do so here. These are overridden by the validate options arguments,
  * if one is defined in validate().
  * @param {Object} options 
@@ -26,6 +25,7 @@ export const setValidationOptions = ({ logs, throws, prefix }) => {
 }
 
 /**
+ * @function
  * Resets the global validation options to their defaults
  */
 export const resetValidationOptions = () => {
@@ -133,6 +133,7 @@ const validationReducer = (finalResult, nextValidation, { logs, throws, prefix }
  * @param {String} prefix - optional prefix to any error or console log 
  */
 const handleFailure = (validation, shouldLog, shouldThrow, prefix) => {
+  // prepend the prefix if one is defined
   const reason = prefix
     ? [ prefix, ...validation.reason ]
     : validation.reason
