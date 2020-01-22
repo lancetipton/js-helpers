@@ -6,6 +6,17 @@ const { isNum } = require('../number')
 const { mockConsole } = require('jestlib')
 
 describe('validate', () => {
+  let resetMocks = null
+
+  beforeEach(() => {
+    resetMocks = mockConsole(['error'])
+  })
+
+  afterEach(() => {
+    resetMocks()
+    validate.resetOptions()
+  })
+
   it ('should validate all conditions, returning true if all are valid', () => {
     const x = 3
     const y = 'hello' 
@@ -17,11 +28,10 @@ describe('validate', () => {
       z: isArr
     })
     expect(isValid).toBe(true)
+    expect(console.error).toHaveBeenCalledTimes(0)
   })
 
   it ('should return false for a failure, and it should error log that failure', () => {
-    const resetMocks = mockConsole(['error'])
-
     const x = 3
     const y = 1
     const z = 'wow' 
@@ -35,8 +45,6 @@ describe('validate', () => {
     
     expect(isValid).toBe(false)
     expect(console.error).toHaveBeenCalledTimes(3)
-
-    resetMocks()
   })
 
   it ('should work with the $default parameter', () => {
@@ -53,8 +61,6 @@ describe('validate', () => {
   })
 
   it ('should return failed cases object', () => {
-    const resetMocks = mockConsole(['error'])
-
     const x = 3
     const y = 1
     const z = 'wow' 
@@ -70,42 +76,61 @@ describe('validate', () => {
     
     expect(isValid).toBe(false)
     expect(console.error).toHaveBeenCalledTimes(3)
-
-    resetMocks()
   })
 
-  it ('should be configurable by the options argument', () => {
-    const resetMocks = mockConsole(['error'])
-    const x = 3
-    const y = 1
-    const z = 'wow' 
+  describe ('options', () => {
+    it ('should handle the throws option', () => {
+      const x = 3
+      expect(() => validate({ x }, { x: isArr }, { throws: true }))
+        .toThrow()
+    })
 
-    validate(
-      { x, y, z },
-      { x: x => x < 0 },
-      { logs: false }
-    )
-    expect(() => validate({ x }, { x: x => x < 0 }, { throws: true })).toThrow()
+    it ('should handle the logs option', () => {
+      const x = 1
+      const [ valid ] = validate({ x }, { x: isArr }, { logs: false })
+      expect(valid).toBe(false)
+      expect(console.error).toHaveBeenCalledTimes(0)
+    })
 
-    expect(console.error).toHaveBeenCalledTimes(0)
-    resetMocks()
+
+    it('should handle the prefix option', () => {
+      const prefix = '123'
+      const x = 1
+      validate({ x }, { x: isArr }, { prefix })
+      expect(console.error).toHaveBeenCalledWith(prefix, "Argument \"x\" with value ", 1, " failed validator: isArr." )
+    })
   })
 
-  it ('should handle global configuration of options', () => {
-    validate.setOptions({ throws: true, logs: false, prefix: '123' })    
-    const x = 1
-    expect(() => validate({ x }, { x: x => x < 0 }, { throws: true })).toThrow()
+  describe ('globals', () => {
+    it ('should handle the throws global', () => {
+      validate.setOptions({ throws: true, logs: false })    
+      const x = 1
 
-    validate.resetOptions()
-    
-    const options = { prefix: '123' }
-    validate.setOptions(options)    
+      expect(() => validate({ x }, { x: x => x < 0 }))
+        .toThrow()
 
-    const resetMocks = mockConsole(['error'])
-    validate({ x }, { x: isArr })
-    expect(console.error).toHaveBeenCalled()
-    expect(console.error).toHaveBeenCalledWith(options.prefix, "Argument \"x\" with value ", 1, " failed validator: isArr." )
+      expect(console.error).toHaveBeenCalledTimes(0)
+    })
 
-    resetMocks()
+    it ('should handle the logs global', () => {
+      validate.setOptions({ logs: false })    
+      const x = 1
+
+      const [ valid ] = validate({ x }, { x: isArr })
+      expect(valid).toBe(false)
+      expect(console.error).toHaveBeenCalledTimes(0)
+    })
+
+
+    it('should handle the prefix global', () => {
+      const options = { prefix: '123' }
+      validate.setOptions(options)    
+
+      const x = 1
+      validate({ x }, { x: isArr })
+
+      expect(console.error).toHaveBeenCalledWith(options.prefix, "Argument \"x\" with value ", 1, " failed validator: isArr." )
+    })
+
   })
 })

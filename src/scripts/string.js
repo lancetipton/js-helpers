@@ -1,8 +1,7 @@
-import { isFunc } from './method'
-
 /** @module string */
-
 'use strict'
+
+import { isFunc } from './method'
 
 /**
  * Builds a string path from passed in args ( i.e. path/to/thing ).
