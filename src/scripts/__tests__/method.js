@@ -579,9 +579,9 @@ describe('/method', () => {
     it ('should console error if a case is not an entry', () => {
       const orig = console.error
       console.error = jest.fn()
-      const result = Method.match('fooby', 'wow', 'fallback')
+      const result = Method.match('fooby', 'wow')
       expect(console.error).toHaveBeenCalled()
-      expect(result).toEqual('fallback')
+      expect(result).toBe(null)
       console.error = orig
     })
 
@@ -590,7 +590,7 @@ describe('/method', () => {
       const result = Method.match(1,
         [ isStr, 33 ],
         [ isArr, 55 ],
-        expectedResult
+        [ Method.match.default, expectedResult ]
       )
       expect(result).toEqual(expectedResult)
     })

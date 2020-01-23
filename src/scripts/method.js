@@ -313,7 +313,10 @@ export const cloneFunc = func => {
 * which have the form [ check value or predicate, return value ], and
 * when it encounters an entry whose check value matches the matchArg
 * (or the predicate returns true when passed the matchArg), it returns
-* the return value of that entry (its second element)
+* the return value of that entry.
+*
+* For the default case: use [ match.default, <your default value> ]
+*
 * @param {*} matchArg 
 * @param {Array} entries - the cases
 * @param {*} fallback (optional) fallback default
@@ -324,6 +327,7 @@ export const cloneFunc = func => {
 * match(value,
 *  [ 1, "hello" ],
 *  [ x => x > 2, "greater" ] 
+*  [ match.default, "defaulted"]
 * ) 
 * => returns "hello"
 * 
@@ -342,7 +346,7 @@ export const cloneFunc = func => {
 *       [ 'ADD-TODO', addTodo ],
 *       [ 'REMOVE-TODO', removeTodo ],
 *       [ 'UPDATE-TODO', updateTodo ],
-*       state // default
+*       [ match.default, state ]
 *   )
 *
 *   return reducer(state, action)
@@ -351,13 +355,8 @@ export const cloneFunc = func => {
 export const match = (matchArg, ...args) => {
   if (!args.length) return null
 
-  // separate out the default fallback if one is defined
-  const hasFallback = !isArr(args[args.length - 1])
-  const cases = hasFallback ? args.slice(0, args.length - 1) : args
-  const fallback = hasFallback ? args[args.length - 1] : null
-
   // check all cases and return a value if a match is found
-  for (let entry of cases) {
+  for (let entry of args) {
     if (!isArr(entry)) {
       console.error(`Matching case must be an entry (a 2-element array). Found: ${typeOf(entry)}`, entry)
       break
@@ -367,5 +366,18 @@ export const match = (matchArg, ...args) => {
     if (caseValueOrPredicate === matchArg) return valueOnMatch
   }
 
-  return fallback
+  return null
 }
+
+/**
+ * The default case function you can use with match. Just returns true so the case value can be used.
+ * @function
+ * @example
+ * match(foo
+ *    [ 100, 'a' ],
+ *    [ 200, 'b' ],
+ *    [ match.default, 'default value' ]
+ * )
+ */
+match.default = () => true
+

@@ -14,6 +14,7 @@ describe('validate', () => {
 
   afterEach(() => {
     resetMocks()
+    jest.resetAllMocks()
     validate.resetOptions()
   })
 
@@ -58,6 +59,7 @@ describe('validate', () => {
     })
 
     expect(isValid).toBe(true)
+    expect(console.error).toHaveBeenCalledTimes(0)
   })
 
   it ('should return failed cases object', () => {
@@ -83,6 +85,7 @@ describe('validate', () => {
       const x = 3
       expect(() => validate({ x }, { x: isArr }, { throws: true }))
         .toThrow()
+      expect(console.error).toHaveBeenCalledTimes(0)
     })
 
     it ('should handle the logs option', () => {
@@ -101,7 +104,7 @@ describe('validate', () => {
     })
   })
 
-  describe ('globals', () => {
+  describe ('global options', () => {
     it ('should handle the throws global', () => {
       validate.setOptions({ throws: true, logs: false })    
       const x = 1
