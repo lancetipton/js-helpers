@@ -10,21 +10,21 @@ import { reduceObj, isObj } from './object'
  * 
  * @returns {Object} 
  */
-export const getUrlParamObj = url => {
-  const currentParams = {}
+export const getUrlQueryObj = url => {
+  const currentQueryItems = {}
   const params = urlGetQuery(url)
-  if(!params) return currentParams
+  if(!params) return currentQueryItems
   
   const split = params.split('&')
   split.length &&
     split.map(item => {
       const itemSplit = item.split('=')
       if (itemSplit.length === 2) {
-        currentParams[decodeURIComponent(itemSplit[0])] = decodeURIComponent(itemSplit[1])
+        currentQueryItems[decodeURIComponent(itemSplit[0])] = decodeURIComponent(itemSplit[1])
       }
     })
 
-  return currentParams
+  return currentQueryItems
 }
 
 export const objToUrlParams = obj => {
@@ -83,9 +83,11 @@ export const urlAddParam = (url, key, value, param) => {
 }
 
 /**
- * 
+ * Checks whether a given querystring key exists in the url
  * @param {String} url 
  * @param {String} key 
+ * 
+ * @returns {Boolean}
  */
 export const urlHasQueryKey = (url, key) => {
   const regex = new RegExp('(\&)*(' + key + '=)', 'g')

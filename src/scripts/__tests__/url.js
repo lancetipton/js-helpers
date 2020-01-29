@@ -65,7 +65,7 @@ describe('/url', () => {
         
   })
 
-  describe('getUrlParamObj', () => {
+  describe('getUrlQueryObj', () => {
 
     it('should return a valid object with querystring items', () => {
 
