@@ -93,4 +93,31 @@ describe('/url', () => {
     })
     
   })
+
+  describe('urlHasQueryKey', () => {
+
+    it('should return TRUE on a found querystring key', () => {
+
+      const url = "https://google.com?name=daniel&id=1"
+      const obj = Url.urlHasQueryKey(url, 'name')
+      expect(obj).toBeTruthy()
+
+      const obj2 = Url.urlHasQueryKey(url, 'id')
+      expect(obj2).toBeTruthy()
+
+    })
+
+    it('should return FALSE with invalid url or nonexistent query key', () => {
+
+      const url1 = "https://google.com?fakequerystring"
+      const obj1 = Url.urlHasQueryKey(url1, 'fakequerystring')
+      expect(obj1).toBeFalsy()
+
+      const url2 = "https://google.com/user/help=2"
+      const obj2 = Url.urlHasQueryKey(url2, 'help')
+      expect(obj2).toBeFalsy()
+
+    })
+    
+  })
 })

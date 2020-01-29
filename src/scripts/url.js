@@ -82,21 +82,25 @@ export const urlAddParam = (url, key, value, param) => {
   return `${url}${param}`
 }
 
-// export const urlHasParam(url, paramName) {
-//   const regex = new RegExp('(\\?|&)'+ paramName +'=', 'g')
-//   return regex.test(urlGetQuery(url))
-// }
-
 /**
  * 
+ * @param {String} url 
+ * @param {String} key 
+ */
+export const urlHasQueryKey = (url, key) => {
+  const regex = new RegExp('(\&)*(' + key + '=)', 'g')
+  return regex.test(urlGetQuery(url))
+}
+
+/**
+ * Gets the raw querystring excluding the first '?'
  * @param {String} url
  * 
- * @returns {String} raw querystring only. i.e: '?name=daniel&id=1'
+ * @returns {String} raw querystring only. i.e: 'name=daniel&id=1'
  */
 export const urlGetQuery = url => {
   const queryString = /\?[a-zA-Z0-9\=\&\%\$\-\_\.\+\!\*\'\(\)\,]+/.exec(url)
 
-  // also remove the first '?'
   return queryString ? decodeURIComponent(queryString[0].replace(/\+/g,' ').replace('?','')) : ''
 }
 
