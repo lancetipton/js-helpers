@@ -70,12 +70,12 @@ describe('/url', () => {
     it('should return a valid object with querystring items', () => {
 
       const url = "https://google.com?name=daniel&id=1"
-      const obj = Url.getUrlParamObj(url)
+      const obj = Url.getUrlQueryObj(url)
       expect(obj.name).toEqual('daniel')
       expect(obj.id).toEqual('1')
 
       const url2 = "https://google.com???????test=daniel&&id=5"
-      const obj2 = Url.getUrlParamObj(url2)
+      const obj2 = Url.getUrlQueryObj(url2)
       expect(obj2.test).toEqual('daniel')
       expect(obj2.id).toEqual('5')
     })
@@ -83,11 +83,11 @@ describe('/url', () => {
     it('should return an empty object from url without querystring', () => {
 
       const url = "https://google.com?"
-      const obj = Url.getUrlParamObj(url)
+      const obj = Url.getUrlQueryObj(url)
       expect(obj).toEqual({})
 
       const url2 = "https://google.com?name"
-      const obj2 = Url.getUrlParamObj(url2)
+      const obj2 = Url.getUrlQueryObj(url2)
       expect(obj2).toEqual({})
 
     })
@@ -119,5 +119,41 @@ describe('/url', () => {
 
     })
     
+  })
+
+  describe('getUrlObj', () => {
+
+    it('should return with Full object values', () => {
+
+      const url = "https://google.com:8080/path/yo?name=daniel&id=1#some-hash"
+      const obj = Url.getUrlObj(url)
+      expect(obj).toHaveProperty('url', url)
+      expect(obj).toHaveProperty('protocol', 'https')
+      expect(obj).toHaveProperty('slash', '://')
+      expect(obj).toHaveProperty('host', 'google.com')
+      expect(obj).toHaveProperty('port', ':8080')
+      expect(obj).toHaveProperty('path', '/path/yo')
+      expect(obj).toHaveProperty('query', 'name=daniel&id=1')
+      expect(obj).toHaveProperty('hash', 'some-hash')
+
+    })
+
+    it('should return with Some object values', () => {
+
+      const url = "http://www.google.com:8080/?name=daniel&id=1"
+      const obj = Url.getUrlObj(url)
+      expect(obj).toHaveProperty('url', url)
+      expect(obj).toHaveProperty('host', 'www.google.com')
+      expect(obj).toHaveProperty('port', ':8080')
+      expect(obj).toHaveProperty('query', 'name=daniel&id=1')
+
+    })
+
+    it('should return with no object values', () => {
+
+      const url = "not a valid url input"
+      expect(Url.getUrlObj(url)).toEqual({})
+
+    })
   })
 })

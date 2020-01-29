@@ -44,22 +44,36 @@ export const objToUrlParams = obj => {
   }, '')
 }
 
+/**
+ * Parse the given url to a url object
+ * @param {String} url 
+ * 
+ * @returns {Object} {url, protocol, slash, host, port, path, query, hash}
+ */
 export const getUrlObj = url => {
   const urlRegEx = /^(?:([A-Za-z]+):)?(\/{0,3})([0-9.\-A-Za-z]+)(?::(\d+))?(?:\/([^?#]*))?(?:\?([^#]*))?(?:#(.*))?$/
   const result = urlRegEx.exec(url || window.location.href)
+  const urlData = {}
 
-  const attrs = ['url', 'scheme', 'slash', 'host', 'port', 'path', 'query', 'hash']
-  const urlData = attrs.reduce((data, attr) => {
-    if(typeof result[attr] === "undefined") result[attr] = ""  
-    if(result[attr] !== "" && (attrs[attr] === "port" || attrs[attr] === "slash"))
-        result[attr] = `:${result[attr]}`
-    
-    data[attr] = result[attr]
-    return data
-  }, {})
+  // return empty on possible invalid input
+  if (!result)
+    return urlData
+  
+  const keys = ['url', 'protocol', 'slash', 'host', 'port', 'path', 'query', 'hash']
+
+  // map each keys to the regex result values
+  keys.forEach((key, i) => {
+
+    typeof result[i] === "undefined" 
+      ? urlData[key] = "" 
+        // append special character infront of 'port' and 'slash' values
+      : (key === "port" || key === "slash") 
+        ? urlData[key] = `:${result[i]}`
+        : urlData[key] = result[i]
+
+  })
 
   urlData['path'] = "/" + urlData['path']
-
   return urlData
 }
 
