@@ -3,6 +3,7 @@
 'use strict'
 
 import { reduceObj, isObj } from './object'
+import { typeOf } from './ext'
 
 /**
  * Turns a given url into an object of querystring items
@@ -77,23 +78,61 @@ export const getUrlObj = url => {
   return urlData
 }
 
-export const urlUpcertParam = (url, key, value) => {
-  url = url || ''
-  const re = new RegExp('(\\?|&)'+ key +'=[^&]*' )
+/**
+ * create or update the url with the kvp
+ * @param {String} url 
+ * @param {String} key 
+ * @param {String|Number} value 
+ */
+export const urlUpsertQuerystring = (url, key, value) => {
+
+  // verify url
+  if (!isValidUrl(url)) return ''
+
+  const regex = new RegExp('(\/?|\/&)'+ key +'=[^&]*')
   const param = `${key}=${encodeURIComponent(value)}`
 
-  return re.test(url)
-    ? url.replace(re, `${$1}${param}`)
-    : addParam(url, null, null, param)
+  // either replace or add
+  return regex.test(url)
+    ? url.replace(regex, `${param}`)
+    : urlAddQuerystring(url, param)
 }
 
-export const urlAddParam = (url, key, value, param) => {
-  url = url || ''
-  param = param || `${key}=${encodeURIComponent(value)}`
-  url.indexOf('?') === -1 && (url += '?')
-  url.indexOf('=') !== -1 && (url += '&')
+/**
+ * Adds a querystring to a given url. pass in either an object of kvp or a string of the full querystring
+ * @param {String} url 
+ * @param {String|Object} param - can be the raw querystring or kvp
+ * 
+ * @returns {String} - url with added querystring
+ */
+export const urlAddQuerystring = (url, param) => {
 
-  return `${url}${param}`
+  // verify url
+  if (!isValidUrl(url)) return ''
+
+  let querystring = ''
+  if (typeof param === 'object') {
+    Object.entries(param).forEach(([key, value], index) => {
+
+      // validate that value is a string or a number, use reduce
+      if (typeof value !== 'string' && typeof value !== 'number') return 
+
+      querystring += `${key}=${encodeURIComponent(value)}`
+      // append '&' if there's more keys to add in
+      if (index < Object.keys(param).length - 1) querystring += '&'
+    })
+
+  }
+  else if (typeof param === 'string') {
+    querystring = param
+  }
+
+  if (querystring !== '') {
+    url.indexOf('?') === -1 && (url += '?')
+    url.indexOf('=') !== -1 && (url += '&')
+  }
+
+  return `${url}${querystring}`
 }
 
 /**

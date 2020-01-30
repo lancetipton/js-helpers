@@ -156,4 +156,123 @@ describe('/url', () => {
 
     })
   })
+
+  describe('urlAddQuerystring', () => {
+
+    it('should return the URL with querystring given a param object', () => {
+
+      const url = "https://google.com"
+      const param = {
+        name: 'daniel',
+        food: 'pasta'
+      }
+      const obj = Url.urlAddQuerystring(url, param)
+      expect(obj).toEqual('https://google.com?name=daniel&food=pasta')
+
+
+      const url2 = "https://google.com?id=500"
+      const param1 = {
+        name: 'daniel',
+        food: 'pasta'
+      }
+      const obj2 = Url.urlAddQuerystring(url2, param1)
+      expect(obj2).toEqual('https://google.com?id=500&name=daniel&food=pasta')
+
+    })
+
+    it('should return the URL with querystring given a param string', () => {
+
+      const url = "https://google.com"
+      const param = 'test=daniel&id=123'
+      const obj = Url.urlAddQuerystring(url, param)
+      expect(obj).toEqual('https://google.com?test=daniel&id=123')
+
+
+      const url2 = "https://google.com?id=500"
+      const param1 = 'animal=cat&color=red'
+      const obj2 = Url.urlAddQuerystring(url2, param1)
+      expect(obj2).toEqual('https://google.com?id=500&animal=cat&color=red')
+
+    })
+
+    it('should return the URL if param object is not valid', () => {
+
+      const url = "https://google.com"
+      const param = {
+        foo: () => {},
+        bar: {}
+      }
+      const obj = Url.urlAddQuerystring(url, param)
+      expect(obj).toEqual('https://google.com')
+
+    })
+
+    it('should return emptystring when no url param', () => {
+
+      const param = {}
+      const obj = Url.urlAddQuerystring(null, param)
+      expect(obj).toEqual('')
+
+      const param2 = {
+        test: 'foo'
+      }
+      const obj2 = Url.urlAddQuerystring(null, param2)
+      expect(obj2).toEqual('')
+
+    })
+
+  })
+
+  describe('urlUpsertQuerystring', () => {
+
+    it('should return the URL with added querystring (no existing querystring)', () => {
+
+      const url = "https://google.com"
+      const obj = Url.urlUpsertQuerystring(url, 'id', 5)
+      expect(obj).toEqual('https://google.com?id=5')
+
+    })
+
+    it('should return the URL with added querystring (existing querystring)', () => {
+
+      const url = "https://google.com?name=daniel"
+      const obj = Url.urlUpsertQuerystring(url, 'id', 5)
+      expect(obj).toEqual('https://google.com?name=daniel&id=5')
+
+    })
+
+    it('should replace the existing querystring key', () => {
+
+      // replace key at the beginning
+      const url = "https://google.com?name=daniel"
+      const obj = Url.urlUpsertQuerystring(url, 'name', 'foooooo')
+      expect(obj).toEqual('https://google.com?name=foooooo')
+
+      // replace key in the middle
+      const url2 = "https://google.com?name=daniel&id=100&color=red"
+      const obj2 = Url.urlUpsertQuerystring(url2, 'id', 50)
+      expect(obj2).toEqual('https://google.com?name=daniel&id=50&color=red')
+
+      // replace key at the end
+      const url3 = "https://google.com?name=daniel&id=100&color=red"
+      const obj3 = Url.urlUpsertQuerystring(url3, 'color', 'yellow')
+      expect(obj3).toEqual('https://google.com?name=daniel&id=100&color=yellow')
+
+    })
+
+    it('should return emptystring when no/invalid url provided', () => {
+
+      const obj = Url.urlUpsertQuerystring(null, 'name', 'foooooo')
+      expect(obj).toEqual('')
+
+      const obj2 = Url.urlUpsertQuerystring('null', 'name', 'foooooo')
+      expect(obj2).toEqual('')
+
+      // invalid url
+      const obj3 = Url.urlUpsertQuerystring('google.com', 'name', 'foooooo')
+      expect(obj3).toEqual('')
+
+    })
+
+  })
 })
