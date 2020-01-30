@@ -275,4 +275,62 @@ describe('/url', () => {
     })
 
   })
+
+  describe('objToUrlQuerystring', () => {
+
+    it('return a valid querystring from the given object with strings', () => {
+
+      const obj = {
+        name: 'daniel',
+        food: 'pasta'
+      }
+      const result = Url.objToUrlQuerystring(obj)
+      expect(result).toEqual('name=daniel&food=pasta')
+
+    })
+
+    it('return a valid querystring from the given object with number', () => {
+
+      const obj = {
+        name: 'daniel',
+        id: 100
+      }
+      const result = Url.objToUrlQuerystring(obj)
+      expect(result).toEqual('name=daniel&id=100')
+
+    })
+
+    it('return a valid querystring from the given object with nested object', () => {
+
+      const obj = {
+        name: 'daniel',
+        id: {
+          foo: 'bar'
+        }
+      }
+      const result = Url.objToUrlQuerystring(obj)
+      // just appends the nested object via JSON string
+      expect(result).toEqual('name=daniel&id=%7B%22foo%22%3A%22bar%22%7D')
+
+    })
+
+    it('should return valid inputs only, invalid inputs are excluded', () => {
+
+      const obj = {
+        name: 'daniel',
+        func: () => {}
+      }
+      const result = Url.objToUrlQuerystring(obj)
+      expect(result).toEqual('name=daniel')
+
+    })
+
+    it('should return emptystring on null or empty obj', () => {
+
+      expect(Url.objToUrlQuerystring({})).toEqual('')
+      expect(Url.objToUrlQuerystring(null)).toEqual('')
+
+    })
+
+  })
 })

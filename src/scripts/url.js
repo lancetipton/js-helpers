@@ -3,7 +3,8 @@
 'use strict'
 
 import { reduceObj, isObj } from './object'
-import { typeOf } from './ext'
+import { isStr } from './string'
+import { isNum } from './number'
 
 /**
  * Turns a given url into an object of querystring items
@@ -28,12 +29,23 @@ export const getUrlQueryObj = url => {
   return currentQueryItems
 }
 
-export const objToUrlParams = obj => {
+/**
+ * Converts the input object to url querystring
+ * @param {Object} obj 
+ * 
+ * @returns {String} url querystring
+ */
+export const objToUrlQuerystring = obj => {
   let firstSet
   return reduceObj(obj, (key, value, urlStr) => {
     if(!value) return urlStr
 
-    const useVal = isStr(value) ? value : isObj(value) ? JSON.stringify(value) : null
+    const useVal = isStr(value) || isNum(value) 
+      ? value 
+      : isObj(value) 
+        ? JSON.stringify(value) 
+        : null
+    
     if(!useVal) return urlStr
 
     urlStr = !firstSet
@@ -83,6 +95,8 @@ export const getUrlObj = url => {
  * @param {String} url 
  * @param {String} key 
  * @param {String|Number} value 
+ * 
+ * @returns {String} updated querystring url
  */
 export const urlUpsertQuerystring = (url, key, value) => {
 
@@ -111,11 +125,11 @@ export const urlAddQuerystring = (url, param) => {
   if (!isValidUrl(url)) return ''
 
   let querystring = ''
-  if (typeof param === 'object') {
+  if (isObj(param)) {
     Object.entries(param).forEach(([key, value], index) => {
 
       // validate that value is a string or a number, use reduce
-      if (typeof value !== 'string' && typeof value !== 'number') return 
+      if (!isStr(value) && !isNum(value)) return 
 
       querystring += `${key}=${encodeURIComponent(value)}`
       // append '&' if there's more keys to add in
@@ -123,7 +137,7 @@ export const urlAddQuerystring = (url, param) => {
     })
 
   }
-  else if (typeof param === 'string') {
+  else if (isStr(param)) {
     querystring = param
   }
 
