@@ -13,11 +13,25 @@ import { isNum } from './number'
  * @returns {Object} 
  */
 export const getUrlQueryObj = url => {
-  const currentQueryItems = {}
   const params = urlGetQuery(url)
-  if(!params) return currentQueryItems
-  
-  const split = params.split('&')
+  return querystringToObj(params)
+}
+
+/**
+ * takes a raw querystring input and converts it to an object
+ * @param {String} querystring 
+ * 
+ * @returns {Object}
+ */
+export const querystringToObj = querystring => {
+
+  const currentQueryItems = {}
+  if(!querystring) return currentQueryItems
+
+  // check for '?' and take values after it
+  querystring = /(\?*)([a-zA-Z0-9\=\&\%\$\-\_\.\+\!\*\'\(\)\,]+)/.exec(querystring)[2]
+
+  const split = querystring.split('&')
   split.length &&
     split.map(item => {
       const itemSplit = item.split('=')

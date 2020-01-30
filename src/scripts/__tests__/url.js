@@ -333,4 +333,27 @@ describe('/url', () => {
     })
 
   })
+
+  describe('querystringToObj', () => {
+
+    it('should return a valid object with querystring items', () => {
+
+      const obj = Url.querystringToObj('?name=daniel&id=5')
+      expect(obj.name).toEqual('daniel')
+      expect(obj.id).toEqual('5')
+
+      const obj2 = Url.querystringToObj('????????name=daniel&id=5')
+      expect(obj2.name).toEqual('daniel')
+      expect(obj2.id).toEqual('5')
+
+    })
+
+    it('should return empty object on invalid querystring', () => {
+
+      const obj3 = Url.querystringToObj('just some random string')
+      expect(obj3).toEqual({})
+
+    })
+   
+  })
 })
