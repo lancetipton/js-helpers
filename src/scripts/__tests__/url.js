@@ -187,6 +187,19 @@ describe('/url', () => {
 
   describe('urlHasQueryKey', () => {
 
+    it('should return FALSE on a matched URL while using any reserved char ', () => {
+
+      const url = "https://google.com?nam:e=danielk"
+      expect(Url.urlHasQueryKey(url, 'nam:e')).toBe(false)
+
+      const urlPipe = "https://google.com?nam|e=danielk"
+      expect(Url.urlHasQueryKey(urlPipe, 'nam|e')).toBe(false)
+
+      const urlComma = "https://google.com?nam,e=danielk"
+      expect(Url.urlHasQueryKey(urlComma, 'nam,e')).toBe(false)
+
+    })
+
     it('should return FALSE on a invalid URL', () => {
 
       const urls = [

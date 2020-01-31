@@ -188,6 +188,10 @@ export const urlHasQueryKey = (url, key) => {
 
   // verify url
   if (!isValidUrl(url)) return false
+
+  // if a key contains any of the reserved chars, it messes up regex and we shouldnt support the char
+  const hasReservedChar = /[ |;\/?:@&=+$,]/.test(key)
+  if (hasReservedChar) return false
   
   const regex = new RegExp('(\&)*(' + key + '=)', 'g')
   return regex.test(urlGetQuery(url))
