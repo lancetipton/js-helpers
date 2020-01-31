@@ -10,10 +10,59 @@ describe('/url', () => {
 
     it('should return the querystring', () => {
 
-      const url = "www.google.com?name=daniel&id=1"
+      const url = "http://www.google.com?name=daniel&id=1"
       const querystring = Url.urlGetQuery(url)
 
       expect(querystring === 'name=daniel&id=1').toBe(true)
+
+      const url2 = "https://www.google.com?name=daniel"
+      const querystring2 = Url.urlGetQuery(url2)
+
+      expect(querystring2 === 'name=daniel').toBe(true)
+
+    })
+
+    it('should return the querystring given an array querystring', () => {
+
+      const urlCommas = "http://www.google.com?color=red,green,blue"
+      const querystringCommas = Url.urlGetQuery(urlCommas)
+      expect(querystringCommas === "color=red,green,blue").toBe(true)
+
+    })
+
+    it('should return the querystring given special characters', () => {
+
+      // apostrophe '
+      const url = "http://www.google.com?name=daniel'dog&id=1"
+      const querystring = Url.urlGetQuery(url)
+      expect(querystring === "name=daniel'dog&id=1").toBe(true)
+
+    })
+
+    it('should ignore values that uses unencoded reserved characters', () => {
+
+      // will ignore values after : 
+      const url = "http://www.google.com?name=daniel:hello&id=1"
+      const querystring = Url.urlGetQuery(url)
+      expect(querystring === "name=daniel").toBe(true)
+
+      // will ignore values after |
+      const url2 = "http://www.google.com?name=daniel|hello&id=1"
+      const querystring2 = Url.urlGetQuery(url2)
+      expect(querystring2 === "name=daniel").toBe(true)
+
+    })
+
+    it('should return emptystring with invalid URL', () => {
+
+      const urls = [
+        "not a url?name=danielk",
+        "?name=daniel"
+      ]
+
+      urls.map((url) => {
+        expect(Url.urlGetQuery(url) == "").toBe(true)
+      })
 
     })
 

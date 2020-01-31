@@ -187,6 +187,9 @@ export const urlHasQueryKey = (url, key) => {
  * @returns {String} raw querystring only. i.e: 'name=daniel&id=1'
  */
 export const urlGetQuery = url => {
+  // verify url
+  if (!isValidUrl(url)) return ''
+  
   const queryString = /\?[a-zA-Z0-9\=\&\%\$\-\_\.\+\!\*\'\(\)\,]+/.exec(url)
 
   return queryString ? decodeURIComponent(queryString[0].replace(/\+/g,' ').replace('?','')) : ''
