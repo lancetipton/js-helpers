@@ -10,7 +10,7 @@ import { isColl } from './collection'
 
 /**
  * Turns a given url into an object of querystring items
- * @param {String} url
+ * @param {String} url - url to pull the query params from
  * 
  * @returns {Object} 
  */
@@ -21,7 +21,7 @@ export const getUrlQueryObj = url => {
 
 /**
  * takes a raw querystring input and converts it to an object
- * @param {String} querystring 
+ * @param {String} querystring - querystring to parse into an object
  * 
  * @returns {Object}
  */
@@ -50,7 +50,7 @@ export const querystringToObj = querystring => {
 
 /**
  * Converts the input object to url querystring
- * @param {Object} obj 
+ * @param {Object} obj - object with kvp to convert into a querystring
  * 
  * @returns {String} url querystring
  */
@@ -78,7 +78,7 @@ export const objToUrlQuerystring = obj => {
 
 /**
  * Parse the given url to a url object
- * @param {String} url 
+ * @param {String} url - complete url. i.e 'https://google.com/stuff'
  * 
  * @returns {Object} {url, protocol, slash, host, port, path, query, hash}
  */
@@ -111,9 +111,9 @@ export const getUrlObj = url => {
 
 /**
  * create or update the url with the kvp
- * @param {String} url 
- * @param {String} key 
- * @param {String|Number} value 
+ * @param {String} url - complete url you want to upsert to
+ * @param {String} key - key name of your query item
+ * @param {String|Number} value - value of your query item
  * 
  * @returns {String} updated querystring url
  */
@@ -133,7 +133,7 @@ export const urlUpsertQuerystring = (url, key, value) => {
 
 /**
  * Adds a querystring to a given url. pass in either an object of kvp or a string of the full querystring
- * @param {String} url 
+ * @param {String} url - complete url you want to add querystring items to
  * @param {String|Object} param - can be the raw querystring or kvp
  * 
  * @returns {String} - url with added querystring
@@ -170,8 +170,8 @@ export const urlAddQuerystring = (url, param) => {
 
 /**
  * Checks whether a given querystring key exists in the url
- * @param {String} url 
- * @param {String} key 
+ * @param {String} url - complete url that you want to check against
+ * @param {String} key - key to be checked against the url
  * 
  * @returns {Boolean}
  */
@@ -182,7 +182,7 @@ export const urlHasQueryKey = (url, key) => {
 
 /**
  * Gets the raw querystring excluding the first '?'
- * @param {String} url
+ * @param {String} url - url string  i.e 'https://zerista.com?id=5'
  * 
  * @returns {String} raw querystring only. i.e: 'name=daniel&id=1'
  */
@@ -195,7 +195,7 @@ export const urlGetQuery = url => {
 /**
  * Checks if the given string is a valid URL
  * Must begin with ftp/http/https
- * @param {String} string
+ * @param {String} string - any string to check if it's a valid url
  *
  * @returns {Boolean}
  */
