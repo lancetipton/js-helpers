@@ -187,6 +187,19 @@ describe('/url', () => {
 
   describe('urlHasQueryKey', () => {
 
+    it('should return FALSE on a invalid URL', () => {
+
+      const urls = [
+        "not a url?name=danielk",
+        "?name=daniel"
+      ]
+
+      urls.map((url) => {
+        expect(Url.urlHasQueryKey(url, 'name')).toBe(false)
+      })
+
+    })
+
     it('should return TRUE on a found querystring key', () => {
 
       const url = "https://google.com?name=daniel&id=1"

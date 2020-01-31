@@ -185,6 +185,10 @@ export const urlAddQuerystring = (url, param) => {
  * @returns {Boolean}
  */
 export const urlHasQueryKey = (url, key) => {
+
+  // verify url
+  if (!isValidUrl(url)) return false
+  
   const regex = new RegExp('(\&)*(' + key + '=)', 'g')
   return regex.test(urlGetQuery(url))
 }
