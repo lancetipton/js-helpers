@@ -15,6 +15,10 @@ import { isColl } from './collection'
  * @returns {Object} 
  */
 export const getUrlQueryObj = url => {
+
+  // verify url
+  if (!isValidUrl(url)) return ''
+
   const params = urlGetQuery(url)
   return querystringToObj(params)
 }
@@ -41,7 +45,12 @@ export const querystringToObj = querystring => {
     split.map(item => {
       const itemSplit = item.split('=')
       if (itemSplit.length === 2) {
-        currentQueryItems[decodeURIComponent(itemSplit[0])] = decodeURIComponent(itemSplit[1])
+        // if the value contains special char ',' then make it into an array
+        const array = itemSplit[1].split(',')
+        if (array && array.length > 1)
+          currentQueryItems[decodeURIComponent(itemSplit[0])] = array
+        else
+          currentQueryItems[decodeURIComponent(itemSplit[0])] = decodeURIComponent(itemSplit[1])
       }
     })
 
@@ -189,7 +198,7 @@ export const urlHasQueryKey = (url, key) => {
 export const urlGetQuery = url => {
   // verify url
   if (!isValidUrl(url)) return ''
-  
+
   const queryString = /\?[a-zA-Z0-9\=\&\%\$\-\_\.\+\!\*\'\(\)\,]+/.exec(url)
 
   return queryString ? decodeURIComponent(queryString[0].replace(/\+/g,' ').replace('?','')) : ''

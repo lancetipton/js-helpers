@@ -116,6 +116,48 @@ describe('/url', () => {
 
   describe('getUrlQueryObj', () => {
 
+    it('should return emptystring with invalid URL', () => {
+
+      const urls = [
+        "not a url?name=danielk",
+        "?name=daniel"
+      ]
+
+      urls.map((url) => {
+        expect(Url.getUrlQueryObj(url) == "").toBe(true)
+      })
+
+    })
+
+    it('should return object mapping with array', () => {
+
+      const url = "https://google.com?name=daniel&id=1,2,3,4"
+      const obj = Url.getUrlQueryObj(url)
+      expect(obj.name).toEqual('daniel')
+      expect(obj.id).toEqual(['1', '2', '3', '4'])
+
+    })
+
+    it('should return object mapping prior to the reserved colon char', () => {
+
+      const url = "https://google.com?name=daniel&id=5:2&animal=foo"
+      const obj = Url.getUrlQueryObj(url)
+      expect(obj.name).toEqual('daniel')
+      expect(obj.id).toEqual('5')
+      expect(obj.animal).toEqual(undefined)
+
+    })
+
+    it('should return object mapping prior to the reserved pipe char', () => {
+
+      const url = "https://google.com?name=daniel&id=5|2&animal=foo"
+      const obj = Url.getUrlQueryObj(url)
+      expect(obj.name).toEqual('daniel')
+      expect(obj.id).toEqual('5')
+      expect(obj.animal).toEqual(undefined)
+
+    })
+
     it('should return a valid object with querystring items', () => {
 
       const url = "https://google.com?name=daniel&id=1"
