@@ -5,6 +5,8 @@
 import { reduceObj, isObj } from './object'
 import { isStr } from './string'
 import { isNum } from './number'
+import { isBool } from './boolean'
+import { isColl } from './collection'
 
 /**
  * Turns a given url into an object of querystring items
@@ -26,6 +28,9 @@ export const getUrlQueryObj = url => {
 export const querystringToObj = querystring => {
 
   const currentQueryItems = {}
+  const stringSplit = querystring.split('?')
+  querystring = stringSplit[ stringSplit.length -1 ]
+
   if(!querystring) return currentQueryItems
 
   // check for '?' and take values after it
@@ -54,9 +59,9 @@ export const objToUrlQuerystring = obj => {
   return reduceObj(obj, (key, value, urlStr) => {
     if(!value) return urlStr
 
-    const useVal = isStr(value) || isNum(value) 
+    const useVal = isStr(value) || isNum(value) || isBool(value)
       ? value 
-      : isObj(value) 
+      : isObj(value) || isColl(value)
         ? JSON.stringify(value) 
         : null
     

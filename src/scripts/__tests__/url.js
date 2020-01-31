@@ -314,6 +314,30 @@ describe('/url', () => {
 
     })
 
+    it('return a valid querystring from the given object with boolean', () => {
+
+      const obj = {
+        name: 'daniel',
+        alive: true
+      }
+      const result = Url.objToUrlQuerystring(obj)
+      // just appends the nested object via JSON string
+      expect(result).toEqual('name=daniel&alive=true')
+
+    })
+
+    it('return a valid querystring from the given object with array', () => {
+
+      const obj = {
+        name: 'daniel',
+        groups: [1, 2, 3]
+      }
+      const result = Url.objToUrlQuerystring(obj)
+      // just appends the nested object via JSON string
+      expect(result).toEqual('name=daniel&groups=%5B1%2C2%2C3%5D')
+
+    })
+
     it('should return valid inputs only, invalid inputs are excluded', () => {
 
       const obj = {
@@ -345,6 +369,10 @@ describe('/url', () => {
       const obj2 = Url.querystringToObj('????????name=daniel&id=5')
       expect(obj2.name).toEqual('daniel')
       expect(obj2.id).toEqual('5')
+
+      const obj3 = Url.querystringToObj('/hello?name=daniel&id=5')
+      expect(obj3.name).toEqual('daniel')
+      expect(obj3.id).toEqual('5')
 
     })
 
