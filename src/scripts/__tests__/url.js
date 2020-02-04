@@ -6,23 +6,23 @@ describe('/url', () => {
 
   beforeEach(() => jest.resetAllMocks())
 
-  describe('querystringToObj', () => {
+  describe('queryToObj', () => {
 
     it('should return a valid object with querystring items', () => {
 
-      const obj = Url.querystringToObj('?name=daniel&id=5')
+      const obj = Url.queryToObj('?name=daniel&id=5')
       expect(obj.name).toEqual('daniel')
       expect(obj.id).toEqual('5')
 
-      const obj2 = Url.querystringToObj('????????name=daniel&id=5')
+      const obj2 = Url.queryToObj('????????name=daniel&id=5')
       expect(obj2.name).toEqual('daniel')
       expect(obj2.id).toEqual('5')
 
-      const obj3 = Url.querystringToObj('/hello?name=daniel&id=5')
+      const obj3 = Url.queryToObj('/hello?name=daniel&id=5')
       expect(obj3.name).toEqual('daniel')
       expect(obj3.id).toEqual('5')
 
-      const obj4 = Url.querystringToObj('?name=some%20sentence%20with%20spaces')
+      const obj4 = Url.queryToObj('?name=some%20sentence%20with%20spaces')
       expect(obj4.name).toEqual('some sentence with spaces')
 
     })
@@ -112,7 +112,7 @@ describe('/url', () => {
         
   })
 
-  describe('objToQuerystring', () => {
+  describe('objToQuery', () => {
 
     it('return a valid querystring from the given object with strings', () => {
 
@@ -120,13 +120,13 @@ describe('/url', () => {
         name: 'daniel',
         food: 'pasta'
       }
-      const result = Url.objToQuerystring(obj)
+      const result = Url.objToQuery(obj)
       expect(result).toEqual('?name=daniel&food=pasta')
 
       const obj2 = {
         name: 'some sentence with spaces',
       }
-      const result2 = Url.objToQuerystring(obj2)
+      const result2 = Url.objToQuery(obj2)
       expect(result2).toEqual('?name=some%20sentence%20with%20spaces')
 
     })
@@ -137,7 +137,7 @@ describe('/url', () => {
         name: 'daniel',
         id: 100
       }
-      const result = Url.objToQuerystring(obj)
+      const result = Url.objToQuery(obj)
       expect(result).toEqual('?name=daniel&id=100')
 
     })
@@ -150,7 +150,7 @@ describe('/url', () => {
           foo: 'bar'
         }
       }
-      const result = Url.objToQuerystring(obj)
+      const result = Url.objToQuery(obj)
       // just appends the nested object via JSON string
       expect(result).toEqual('?name=daniel&id=%7B%22foo%22%3A%22bar%22%7D')
 
@@ -162,7 +162,7 @@ describe('/url', () => {
         name: 'daniel',
         alive: true
       }
-      const result = Url.objToQuerystring(obj)
+      const result = Url.objToQuery(obj)
       // just appends the nested object via JSON string
       expect(result).toEqual('?name=daniel&alive=true')
 
@@ -174,7 +174,7 @@ describe('/url', () => {
         name: 'daniel',
         groups: [1, 2, 3]
       }
-      const result = Url.objToQuerystring(obj)
+      const result = Url.objToQuery(obj)
       expect(result).toEqual('?name=daniel&groups=1%2C2%2C3')
 
     })
@@ -185,15 +185,15 @@ describe('/url', () => {
         name: 'daniel',
         func: () => {}
       }
-      const result = Url.objToQuerystring(obj)
+      const result = Url.objToQuery(obj)
       expect(result).toEqual('?name=daniel')
 
     })
 
     it('should return emptystring on null or empty obj', () => {
 
-      expect(Url.objToQuerystring({})).toEqual('')
-      expect(Url.objToQuerystring(null)).toEqual('')
+      expect(Url.objToQuery({})).toEqual('')
+      expect(Url.objToQuery(null)).toEqual('')
 
     })
 

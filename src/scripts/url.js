@@ -2,7 +2,7 @@
 
 'use strict'
 
-import { reduceObj, isObj } from './object'
+import { reduceObj } from './object'
 import { isStr } from './string'
 import { isNum } from './number'
 import { isBool } from './boolean'
@@ -14,20 +14,17 @@ import { isArr } from './array'
 
 /**
  * takes a raw querystring input and converts it to an object
- * @param {String} querystring - querystring to parse into an object
+ * @param {String} string - querystring to parse into an object
  * 
  * @returns {Object}
  */
-export const querystringToObj = querystring => {
+export const queryToObj = string => {
 
   const currentQueryItems = {}
-  const stringSplit = querystring.split('?')
-  querystring = stringSplit[ stringSplit.length -1 ]
+  const stringSplit = string.split('?')
+  const querystring = stringSplit[ stringSplit.length -1 ]
 
   if(!querystring) return currentQueryItems
-
-  // check for '?' and take values after it
-  querystring = /(\?*)([a-zA-Z0-9\=\&\%\$\-\_\.\+\!\*\'\(\)\,]+)/.exec(querystring)[2]
 
   const split = querystring.split('&')
 
@@ -63,7 +60,7 @@ export const querystringToObj = querystring => {
  * 
  * @returns {String} querystring
  */
-export const objToQuerystring = obj => {
+export const objToQuery = obj => {
   let firstSet
   return reduceObj(obj, (key, value, urlStr) => {
     if(!value) return urlStr
