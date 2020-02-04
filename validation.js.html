@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>promise.js - Documentation</title>
+    <title>validation.js - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -40,7 +40,7 @@ if one is defined in validate().</a></li><li data-type='method'><a href="module-
 
 <div id="main">
     
-    <h1 class="page-title">promise.js</h1>
+    <h1 class="page-title">validation.js</h1>
     
 
     
@@ -50,128 +50,155 @@ if one is defined in validate().</a></li><li data-type='method'><a href="module-
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/** @module promise */
+            <pre class="prettyprint source linenums"><code>/** @module validation */
 
-'use strict'
+const OPTIONS = {
+  SHOULD_LOG: true,
+  SHOULD_THROW: false,
+  LOG_PREFIX: null
+}
 
-import { isObj } from './object'
-import { isFunc } from './method'
+/** 
+ * @function
+ *  Validates each key-value entry in argObj using the validator functions in validators with matching keys. 
+ *  For any failures, validate will console.error the reason.
+ *  @param { Object } argObj - object, where keys are the name of the argument to validate, and value is its value
+ *  @param { Object } validators - object, where keys match the argument and values are predicate functions (return true/false and are passed the arg with the same key). 
+ *     - Use the `$default` key to define a default validator, which will validate any argument that doesn't have a custom validator defined.
+ *  @param { Object } options - contains `logs` and `throws` props. When a validation fails, it will throw an error if `throws` is true. Else it logs error if `logs` is true.
+ *  @returns { Array } - an entry with two values [ success, results ]. 
+ *     - success: { Boolean } that is true if all arguments passed their validators, false otherwise
+ *     - results: { Object } that holds the validation results for each argument, keyed by the same keys as in argObj. For each
+ *                result object, the properties are: { success, key, value, validator, reason }.
+ *  @example 
+ *    const elements = {}
+ *    const name = 'michael'
+ *    const address = '12345 E. Street'
+ *    const [ isValid, results ] = validate(
+ *      { elements, name, address },
+ *      { elements: isArr, $default: isStr }
+ *    )
+ *    console.log(isValid) // false
+ *    console.log(results.elements.success) // false
+ */
+export const validate = (argObj, validators={}, { logs=OPTIONS.SHOULD_LOG, throws=OPTIONS.SHOULD_THROW, prefix=OPTIONS.LOG_PREFIX }={}) => {
+  const validationCaseEntries = Object.entries(argObj)
+
+  // if no default or custom validator set for an arg, just assert it is valid
+  const defaultValidator = () => true
+
+  // validate each argument
+  const validationResults = validationCaseEntries.map(
+    ([argName, argValue]) => validateArgument(
+      argName,
+      argValue,
+      validators[argName] || validators['$default'] || defaultValidator
+    )
+  )
+
+  // reduce the argument validation results into a single object of form { success, cases }.
+  // success is true if all arguments passed their validators. Cases holds each argument's validation results.
+  const reduceCases = (total, next) => validationReducer(total, next, { logs, throws, prefix })
+  const { success, cases } = validationResults.reduce(reduceCases, { success: true, cases: {} })
+
+  return [ success, cases ]
+}
 
 /**
- * Converts a standard callback method into Promise
- * @param {function} method - method to turn into a promise
- * @return method as a promise
+ * @function
+ * If you need to configure validation properties globally, you can do so here. These are overridden by the validate options arguments,
+ * if one is defined in validate().
+ * @param {Object} options 
+ * @param {Boolean} options.logs - indicates you want validate() to log errors when a case fails
+ * @param {Boolean} options.throws - indicates validate() should throw an error when a case fails
+ * @param {String} options.prefix - a prefix to any console error logs or to messages of errors thrown
  */
-export const promisify = method => {
-  if(!isFunc(method)) throw `Argument must be a function`
-
-  return (...args) => {
-    return new Promise((res, rej) => {
-      // If the last arg is not a function, just return the resolved method
-      if(!isFunc(args[args.length -1]))
-        return res(method(...args))
-
-      // Remove the callback method
-      args.pop()
-      // Replace it with the promise resolve / reject
-      args.push((...cbData) => {
-        // If the cbData first arg is not falsy, then reject the promise
-        // Otherwise resolve it
-        return cbData &amp;&amp; cbData[0]
-          ? rej(...cbData)
-          : res(...cbData)
-      })
-
-      // Call the method, and return it
-      return method(...args)
-    })
+validate.setOptions = ({ logs, throws, prefix }) => {
+  if (logs !== undefined) {
+    OPTIONS.SHOULD_LOG = logs
+  }
+  if (throws !== undefined) {
+    OPTIONS.SHOULD_THROW = throws
+  }
+  if (prefix !== undefined) {
+    OPTIONS.LOG_PREFIX = prefix
   }
 }
 
-
-const isTest = process.env.NODE_ENV === 'test'
+/**
+ * @function
+ * Resets the global validation options to their defaults
+ */
+validate.resetOptions = () => {
+  OPTIONS.SHOULD_LOG = true
+  OPTIONS.SHOULD_THROW = false
+  OPTIONS.LOG_PREFIX = null
+}
 
 /**
- * Creates an array of Object default properties not to convert into promises
+ * Helper for `validate`. Validates a single value given a validator
+ * @param {*} key 
+ * @param {*} value 
+ * @param {Function} validator 
+ * @returns {Object} of form { success, reason }
  */
-const defObjProps = Array
-  .from([
-    'caller',
-    'callee',
-    'arguments',
-    'apply',
-    'bind',
-    'call',
-    'toString',
-    '__proto__',
-    '__defineGetter__',
-    '__defineSetter__',
-    'hasOwnProperty',
-    '__lookupGetter__',
-    '__lookupSetter__',
-    'isPrototypeOf',
-    'propertyIsEnumerable',
-    'toString',
-    'valueOf',
-    'toLocaleString'
-  ])
-  .concat(Object.getOwnPropertyNames(Object.prototype))
-  .reduce((map, functionName) => {
-    map[functionName] = true
-    return map
-  }, {})
+const validateArgument = (key, value, validator) => {
+  const success = validator(value)
+
+  // if validator is a named function, use its name. If it is an inline anonymous arrow function, its name
+  // matches the argument key and it has no useful/descriptive name, so just stringify it
+  const shouldStringifyValidator = !validator.name || (validator.name === key) || (validator.name === '$default')
+  const validatorString = shouldStringifyValidator ? validator.toString() : validator.name
+
+  const reason = success
+    ? null
+    : [
+      `Argument "${key}" with value `, 
+      value, 
+      ` failed validator: ${validatorString}.`
+    ] 
+   
+  return { success, key, value, validator, reason }
+}
 
 /**
- * Loops an object and looks for any methods that belong to the object, then add an Async version
- * @memberof promise
- * @param {Object} object
- * @return {Object} - object with Async methods added
+ * Helper for `validate`. Reduces validations into a single object of form { success, cases }
+ * @param {*} finalResult 
+ * @param {*} nextValidation 
  */
-const addAsync = object => {
-  if (!object.__IS_PROMISIFIED__) {
-    for (const prop of Object.getOwnPropertyNames(object)) {
-      const isAsync = prop.indexOf('Async') !== -1 || object[`${prop}Async`]
-      if (isAsync || defObjProps[prop]) continue
+const validationReducer = (finalResult, nextValidation, { logs, throws, prefix }) => {
+  // handle the failure
+  !nextValidation.success &amp;&amp; handleFailure(nextValidation, logs, throws, prefix)
 
-      if(isFunc(object[prop]))
-        object[`${prop}Async`] = promisify(object[prop])
-      else {
-        const getValue = Object.getOwnPropertyDescriptor(object, prop).get
-        if(isFunc(getValue)) object[`${prop}Async`] = promisify(getValue)
-      }
+  return {
+    success: finalResult.success &amp;&amp; nextValidation.success,
+    cases: {
+      ...finalResult.cases,
+      [nextValidation.key]: nextValidation
     }
-    object.__IS_PROMISIFIED__ = true
   }
-
-  return object
 }
 
 /**
- * Converts Objects method properties into promiseAsync. allow using promisifyAll
- * @function
- * @param {Object} object
- * @return {Object} - promisified object
+ * Handles a validation failure given validation options
+ * @param {Object} validation 
+ * @param {Boolean} shouldLog 
+ * @param {Boolean} shouldThrow 
+ * @param {String} prefix - optional prefix to any error or console log 
  */
-export const promisifyAll = object => {
-  if(!isObj(object)) return object
+const handleFailure = (validation, shouldLog, shouldThrow, prefix) => {
+  // prepend the prefix if one is defined
+  const reason = prefix
+    ? [ prefix, ...validation.reason ]
+    : validation.reason
 
-  addAsync(object)
-  const proto = Object.getPrototypeOf(object)
-
-  proto &amp;&amp;
-    Object.getPrototypeOf(proto) !== null &amp;&amp;
-    addAsync(proto)
-
-  return object
+  if (shouldThrow)
+    throw new Error(reason.join())
+  
+  if (shouldLog)
+    console.error(...reason)
 }
-
-/**
- * Stops execution for a given amount of time
- * @function
- * @param {number} time - Amount of time to wait
- * @return { void }
- */
-export const wait = time => (new Promise((res, rej) => setTimeout(() => res(true), time)))</code></pre>
+</code></pre>
         </article>
     </section>
 
