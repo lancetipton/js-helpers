@@ -139,7 +139,7 @@ export const flatMap = (arr, mapFn) => {
 }
 
 /**
- * Returns a if it is an Array, else returns b. Remove once added to jsutils
+ * Returns a if it is an Array, else returns b
  * @function
  * @param {*} a 
  * @param {*} b 
