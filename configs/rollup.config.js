@@ -5,44 +5,27 @@ import commonjs from '@rollup/plugin-commonjs'
 import cleanup from 'rollup-plugin-cleanup'
 import sourcemaps from 'rollup-plugin-sourcemaps'
 import buildHook from './buildHook'
-
-const onwarn = warning => {
-  warning.code !== 'CIRCULAR_DEPENDENCY' &&
-    console.error(`(!) ${warning.message}`);
-}
+import { terser } from 'rollup-plugin-terser'
 
 const { DEV_MODE } = process.env
 const babelConfig = require('./babel.config.js')
 const buildPath = `./build`
+const onwarn = wrn => wrn.code !== 'CIRCULAR_DEPENDENCY' &&
+  console.error(`(!) ${wrn.message}`)
 
-const configs = [
-  {
-    input: `./src/index.js`,
-    output: [
-      {
-        file: `${buildPath}/umd/index.js`,
-        format: 'umd',
-        sourcemaps: true,
-        name: 'jsutils'
-      },
-      {
-        file: `${buildPath}/esm/index.js`,
-        format: 'esm',
-        sourcemaps: true
-      }
-    ]
-  },
-  {
-    input: `./src/node/index.js`,
-    output: [
-      {
-        file: `${buildPath}/node/index.js`,
-        format: 'cjs',
-        sourcemaps: true
-      },
-    ]
-  },
-]
+const inputs = {
+  array: 'src/array.js',
+  boolean: 'src/boolean.js',
+  collection: 'src/collection.js',
+  ext: 'src/ext.js',
+  log: 'src/log.js',
+  method: 'src/method.js',
+  number: 'src/number.js',
+  object: 'src/object.js',
+  promise: 'src/promise.js',
+  string: 'src/string.js',
+  url: 'src/url.js',
+}
 
 const plugins = [
   DEV_MODE && buildHook(DEV_MODE),
@@ -62,10 +45,42 @@ const plugins = [
   cleanup(),
 ]
 
-export default configs.map(config => ({
-  ...config,
-  watch: { clearScreen: false },
-  plugins,
-  onwarn,
-}))
+const buildConfig = (type, extra={}) => {
+  return {
+    input: extra.input || {
+      index: `./src/index.js`,
+      ...inputs
+    },
+    output: extra.output || {
+      dir: `${buildPath}/${type}`,
+      format: type,
+      sourcemaps: true,
+      ...extra.output
+    },
+    plugins: [
+      ...(extra.plugins || []),
+      ...plugins,
+    ],
+    watch: { clearScreen: false },
+    onwarn,
+  }
+}
+
+export default Array.from([ 'umd', 'cjs', 'esm' ])
+  .map(type => {
+    return type !== 'umd'
+      ? buildConfig(type)
+      : buildConfig(type, {
+          input: `./src/index.js`,
+          output: {
+            name: 'jsutils',
+            file: `${buildPath}/${type}/index.js`,
+            format: type,
+            sourcemaps: true,
+            esModule: false,
+          },
+          plugins: [ terser() ]
+        })
+
+  })
 

@@ -9,7 +9,7 @@
   "license": "MIT",
   "scripts": {
     "build": "yarn build:clean && yarn build:rollup",
-    "build:clean": "rimraf ./build/esm && rimraf ./build/cjs",
+    "build:clean": "rimraf ./build/esm && rimraf ./build/umd && rimraf ./build/cjs",
     "build:rollup": "NODE_ENV=production rollup -c ./configs/rollup.config.js",
     "clean": "yarn cache clean && rimraf yarn.lock && rimraf node_modules && yarn install --force",
     "deploy": "yarn build && yarn docs && gh-pages -d docs",
