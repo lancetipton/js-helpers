@@ -102,7 +102,7 @@ const validateArgs = (args, errors) => (
 * @param {string} line - command to be run in the shell
 * @return response from the shell
 */
-const cmd = async line => {
+const cmd = async function(line){
   SHOW_LOGS && logData(`CMD => ${line}`, 'log')
   const response = await cmdExec(line, cmdOpts)
   const { stdout, stderr } = response
@@ -120,9 +120,9 @@ const cmd = async line => {
 * @param {string} loc - location to put the copied file
 * @return { void }
 */
-const copyFile = async (file, loc) => await cmd(
-  `cp ${file} ${loc}`
-)
+const copyFile = async function(file, loc) {
+  return await cmd(`cp ${file} ${loc}`)
+}
 
 /**
 * Ensures a folder path exists, if it does not, then it creates it
@@ -130,7 +130,7 @@ const copyFile = async (file, loc) => await cmd(
 * @param {string} checkPath - path to check
 * @return {boolean} - if the path exists
 */
-const ensureFolderPath = async checkPath => {
+const ensureFolderPath = async function(checkPath){
   try {
     // Check if the path exists, if not, then create it
     const pathExists = fs.existsSync(checkPath)

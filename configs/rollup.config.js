@@ -13,7 +13,7 @@ const onwarn = warning => {
 
 const { DEV_MODE } = process.env
 const babelConfig = require('./babel.config.js')
-const buildPath = `./build/`
+const buildPath = `./build`
 
 const configs = [
   {

@@ -2,15 +2,16 @@ const path = require('path')
 const ROOT_DIR = path.join(__dirname, '../')
 
 module.exports = {
-  roots: [ `${ROOT_DIR}/src` ],
+  rootDir: '../',
+  preset: "rollup-jest",
   transform: {
     "^.+\\.js$": "babel-jest"
   },
   testMatch: [
-    `${ROOT_DIR}/src/**/__tests__/**/*.js?(x)`
+    `${ROOT_DIR}src/**/__tests__/**/*.js?(x)`
   ],
   collectCoverageFrom: [
-    `${ROOT_DIR}/src/index.js`
+    `${ROOT_DIR}src/index.js`
   ],
   moduleFileExtensions: [
     "js",
@@ -21,8 +22,8 @@ module.exports = {
   globals: {
     __DEV__: true
   },
-  testEnvironment: "jsdom",
+  testEnvironment: "node",
   setupFilesAfterEnv: [
-    `${ROOT_DIR}/configs/setupTests.js`
+    `${ROOT_DIR}configs/setupTests.js`
   ]
 }

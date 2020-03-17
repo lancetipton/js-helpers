@@ -2,19 +2,21 @@ const loadModule = require('../loadModule')
 const testFunc = require('../__mocks__/test_load_func')
 const path = require('path')
 
+const packagePath = '../../../package.json'
+
 describe('loadModule', () => {
 
   beforeEach(() => jest.resetAllMocks())
 
   it('should accept a string as the first argument', () => {
-    const packageConfig = loadModule('../../../../package.json')
+    const packageConfig = loadModule(packagePath)
     
     expect(typeof packageConfig).toBe('object')
     expect(packageConfig.name).toBe('jsutils')
   })
 
   it('should accept an array as the first argument', () => {
-    const packageConfig = loadModule(['../../../../package.json'])
+    const packageConfig = loadModule([packagePath])
     
     expect(typeof packageConfig).toBe('object')
     expect(packageConfig.name).toBe('jsutils')
@@ -25,9 +27,7 @@ describe('loadModule', () => {
       // Bad Path
       '../../package.json',
       // Bad Path
-      '../../../package.json',
-      // Good Path
-      '../../../../package.json',
+      packagePath,
     ])
     
     expect(typeof packageConfig).toBe('object')
@@ -35,11 +35,11 @@ describe('loadModule', () => {
 
     const loadedModule = loadModule([
       // Bad Path
-      '../../../package.json',
+      '../../package.json',
       // Good Path
       '../__mocks__/test_load_json.json',
       // Good Path - Should not be loaded
-      '../../../../package.json',
+      packagePath,
     ])
     
     // Should not load the package.json
@@ -66,9 +66,8 @@ describe('loadModule', () => {
 
   })
 
-
   it('should load the module from the passed in rootDir when it exists', () => {
-    const rootDir = path.join(__dirname, '../../../../')
+    const rootDir = path.join(__dirname, '../../../')
     const packageConfig = loadModule('./package.json', { rootDir })
     
     expect(typeof packageConfig).toBe('object')

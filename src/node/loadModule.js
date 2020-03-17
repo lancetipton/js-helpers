@@ -7,6 +7,7 @@ const { isArr } = require('../array')
 const { isFunc } = require('../method')
 const { isObj } = require('../object')
 const { isStr } = require('../string')
+const { logData } = require('../log')
 
 const getRelativePath = pathToModule => {
   const { filename } = module.parent
@@ -132,7 +133,7 @@ const loadModule = (pathsToModule, config={}, ...params) => {
     // Call loopLoad to load the module
     ? loopLoad(pathsToModule, config, params)
     // If not paths, log an error
-    : lodData(`loadModule requires an array or string as the first argument.`, `error`)
+    : logData(`loadModule requires an array or string as the first argument.`, `error`)
 
 }
 

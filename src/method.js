@@ -171,7 +171,7 @@ export const memorize = (func, getCacheKey, limit=1) => {
     if (!isFunc(func) || (getCacheKey && !isFunc(getCacheKey)))
       return console.error('Error: Expected a function', func, getCacheKey)
 
-    let memorized = function() {
+    let memorized = function(){
       const cache = memorized.cache
       const key = getCacheKey ? getCacheKey.apply(this,  arguments) : arguments[0]
 
@@ -208,7 +208,7 @@ export const memorize = (func, getCacheKey, limit=1) => {
  */
 export const throttle = (func, wait = 100) => {
   let waiting = false
-  return (...args) => {
+  return function(...args){
     if (waiting) return
     waiting = true
     func.apply(this, args)
@@ -234,7 +234,7 @@ export const throttle = (func, wait = 100) => {
  */
 export const throttleLast = (func, cb, wait = 100) => {
   let throttleTimeout
-  return (...args) => {
+  return function(...args) {
     // If the throttle already exists clear it, and create it again
     if (throttleTimeout) clearTimeout(throttleTimeout)
     // Store a reference to the timeout
@@ -291,7 +291,7 @@ export const uuid = a => a ? (a ^ Math.random() * 16 >> a / 4).toString(16) : ([
  */
 export const cloneFunc = func => {
   const funcRef = func
-  const funcWrap = (...args) => new funcRef(...args)
+  const funcWrap = function(...args) { return new funcRef(...args) }
 
   const funcClone = function(...args){
     return func instanceof funcClone
