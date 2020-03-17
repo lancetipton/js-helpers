@@ -95,7 +95,7 @@ export const eitherFunc = (func1, func2) => (
  */
 export const debounce = (func, wait = 250, immediate = false) => {
   let timeout
-  return (...args) => {
+  function wrapFunc(...args){
     if (!isFunc(func)) return null
 
     const context = this
@@ -109,6 +109,7 @@ export const debounce = (func, wait = 250, immediate = false) => {
     if (callNow)
       return isFunc(func) && func.apply(context, args)
   }
+  return wrapFunc
 }
 
 /**

@@ -6,6 +6,11 @@ import cleanup from 'rollup-plugin-cleanup'
 import sourcemaps from 'rollup-plugin-sourcemaps'
 import buildHook from './buildHook'
 
+const onwarn = warning => {
+  warning.code !== 'CIRCULAR_DEPENDENCY' &&
+    console.error(`(!) ${warning.message}`);
+}
+
 const { DEV_MODE } = process.env
 const babelConfig = require('./babel.config.js')
 const buildPath = `./build/`
@@ -61,5 +66,6 @@ export default configs.map(config => ({
   ...config,
   watch: { clearScreen: false },
   plugins,
+  onwarn,
 }))
 

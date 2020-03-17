@@ -14,8 +14,8 @@
     "clean": "yarn cache clean && rimraf yarn.lock && rimraf node_modules && yarn install --force",
     "deploy": "yarn build && gh-pages -d docs",
     "dev": "rollup -c ./configs/rollup.config.js -w",
-    "docs": "rimraf ./docs && ./node_modules/.bin/jsdoc src/scripts -d ./docs --debug --verbose --package ./package.json -t ./node_modules/docdash -R README.md && yarn docs:move",
-    "docs:move": "node ./move_docs.js",
+    "docs": "rimraf ./docs && ./node_modules/.bin/jsdoc src -d ./docs --debug --verbose --package ./package.json -t ./node_modules/docdash -R README.md && yarn docs:move",
+    "docs:move": "node ./configs/moveDocs.js",
     "test": "NODE_ENV=test jest --no-cache --verbose --config=./configs/jest.config.js",
     "web": "http-server ./docs -p 8888 --cors"
   },

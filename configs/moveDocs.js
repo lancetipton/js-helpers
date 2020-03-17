@@ -1,7 +1,7 @@
 const { promisify } = require('util')
 const { exec } = require('child_process')
 const cmdExec = promisify(exec)
-const package = require('./package.json')
+const package = require('../package.json')
 
 const fixDocs = async () => {
   try {
