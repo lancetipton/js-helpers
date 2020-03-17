@@ -8,7 +8,7 @@
   "author": "lancetipton <lancetipton04@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "build": "yarn build:clean && yarn build:webpack && yarn docs",
+    "build": "yarn build:clean && yarn build:rollup && yarn docs",
     "build:clean": "rimraf ./build/esm && rimraf ./build/cjs",
     "build:rollup": "NODE_ENV=production rollup -c ./configs/rollup.config.js",
     "clean": "yarn cache clean && rimraf yarn.lock && rimraf node_modules && yarn install --force",
