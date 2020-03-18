@@ -4,7 +4,6 @@ import { isStr } from './isStr'
 import { mapString } from './mapString'
 import { isLowerCase } from './isLowerCase'
 import { isUpperCase } from './isUpperCase'
-import { isDelimiter } from './isDelimiter'
 
 /**
  * @function

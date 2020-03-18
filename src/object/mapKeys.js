@@ -4,7 +4,6 @@
 import { isObj } from './isObj'
 import { isFunc } from '../method/isFunc'
 import { mapEntries } from './mapEntries'
-import { keyMapper } from './keyMapper'
 
 /**
  * Shortcut helper for mapping just the keys of an object.

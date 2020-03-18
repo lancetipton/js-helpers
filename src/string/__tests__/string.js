@@ -1,5 +1,5 @@
 'use strict'
-import { uuid } from '../method/uuid'
+import { uuid } from '../../method/uuid'
 
 const Str = require('../')
 

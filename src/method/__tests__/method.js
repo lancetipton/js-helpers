@@ -1,5 +1,5 @@
-const { isArr } = require('../array/isArr')
-const { isStr } = require('../string/isStr')
+const { isArr } = require('../../array/isArr')
+const { isStr } = require('../../string/isStr')
 const Method = require('../')
 
 const promiseHelper = isValid => new Promise((res, rej) => {

@@ -2,6 +2,7 @@
 
 import { equalsNaN } from './equalsNaN'
 import { getNums } from './getNums'
+import { isNum } from './isNum'
 
 /**
  * Converts passed in value to a number.

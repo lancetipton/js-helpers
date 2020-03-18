@@ -1,7 +1,7 @@
 /** @module array */
 
 import { isArr } from './isArr'
-import { isFunc } from '../method'
+import { isFunc } from '../method/isFunc'
 import { validate } from '../validation'
 
 /**

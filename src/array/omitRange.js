@@ -1,7 +1,8 @@
 /** @module array */
 
-import { isNonNegative } from './number'
-import { validate } from './validation'
+import { isNonNegative } from '../number/isNonNegative'
+import { validate } from '../validation'
+import { isArr } from './isArr'
 
 /**
  * Returns a new array with the same elements as arr, excluding `count` elements beginning at index `startIndex`

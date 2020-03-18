@@ -1,6 +1,7 @@
 /** @module functions */
 
 import { isArr } from '../array/isArr'
+import { isFunc } from './isFunc'
 
 /**
  * Helper for pipeline. Passes 'item' into 'expression' as its first argument.

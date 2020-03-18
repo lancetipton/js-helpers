@@ -1,7 +1,7 @@
 /** @module boolean */
 
-import { toStr } from '../string/toString'
-import { toBool } from './toBool'
+import { toStr } from '../string/toStr'
+import { isBool } from './isBool'
 
 /**
  * Converts a value to a boolean as a string.

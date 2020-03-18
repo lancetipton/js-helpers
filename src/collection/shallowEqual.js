@@ -4,7 +4,7 @@ import { get } from './get'
 import { isArr } from '../array/isArr'
 import { isNum } from '../number/isNum'
 import { isStr } from '../string/isStr'
-import { isObj } from '../object/isObj'
+import { isColl } from './isColl'
 
 /**
  * Compares a collection's keys / values with another collections keys / values
@@ -44,7 +44,7 @@ export const shallowEqual = (col1, col2, path) => {
   if(col1 === col2) return true
 
   // Ensure the objects exist, and they have keys we can compare
-  if (!isObj(col1) || !col1 || !isObj(col2) || !col2)
+  if (!col1 || !isColl(col1) || !col2 || !isColl(col2))
     return false
 
   // If they have different key lengths, then they are not equal

@@ -1,6 +1,6 @@
 const Obj = require('../')
-const { isArr } = require('../array/isArr')
-const { snakeCase } = require('../string/snakeCase')
+const { isArr } = require('../../array/isArr')
+const { snakeCase } = require('../../string/snakeCase')
 
 describe('/object', () => {
 

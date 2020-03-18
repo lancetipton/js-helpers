@@ -2,8 +2,8 @@
 
 'use strict'
 
-import { isObj } from './object'
-import { isFunc } from './method'
+import { isObj } from '../object/isObj'
+import { isFunc } from '../method/isFunc'
 
 /**
  * Stops execution for a given amount of time

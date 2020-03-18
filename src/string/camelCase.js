@@ -1,6 +1,7 @@
 /** @module string */
 
 import { capitalize } from './capitalize'
+import { cleanStr } from './cleanStr'
 
 /**
  * Converts a string to camel case.

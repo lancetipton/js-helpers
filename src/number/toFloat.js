@@ -1,5 +1,8 @@
 /** @module number */
 
+import { equalsNaN } from './equalsNaN'
+import { isNum } from './isNum'
+import { getNums } from './getNums'
 
 /**
  * Converts passed in value to a float.

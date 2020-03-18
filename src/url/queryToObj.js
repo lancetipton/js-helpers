@@ -1,6 +1,6 @@
 /** @module url */
 
-import { isArr } from './array'
+import { isArr } from '../array/isArr'
 
 /**
  * takes a raw querystring input and converts it to an object

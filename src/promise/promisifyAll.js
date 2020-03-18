@@ -24,7 +24,6 @@ const defObjProps = Array
     '__lookupSetter__',
     'isPrototypeOf',
     'propertyIsEnumerable',
-    'toString',
     'valueOf',
     'toLocaleString'
   ])
