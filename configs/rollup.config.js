@@ -10,8 +10,8 @@ import { terser } from 'rollup-plugin-terser'
 const { DEV_MODE } = process.env
 const babelConfig = require('./babel.config.js')
 const buildPath = `./build`
-const onwarn = wrn => wrn.code !== 'CIRCULAR_DEPENDENCY' &&
-  console.error(`(!) ${wrn.message}`)
+// const onwarn = wrn => wrn.code !== 'CIRCULAR_DEPENDENCY' &&
+//   console.error(`(!) ${wrn.message}`)
 
 const inputs = {
   array: 'src/array.js',
@@ -54,7 +54,6 @@ const buildConfig = (type, extra={}) => {
     output: extra.output || {
       dir: `${buildPath}/${type}`,
       format: type,
-      sourcemaps: true,
       ...extra.output
     },
     plugins: [
@@ -62,7 +61,7 @@ const buildConfig = (type, extra={}) => {
       ...plugins,
     ],
     watch: { clearScreen: false },
-    onwarn,
+    // onwarn,
   }
 }
 
@@ -79,7 +78,9 @@ export default Array.from([ 'umd', 'cjs', 'esm' ])
             sourcemaps: true,
             esModule: false,
           },
-          plugins: [ terser() ]
+          plugins: [
+            terser()
+          ]
         })
 
   })

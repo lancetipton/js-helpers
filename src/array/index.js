@@ -1,0 +1,7 @@
+export * from './randomArr'
+export * from './randomizeArr'
+export * from './uniqArr'
+export * from './isArr'
+export * from './cloneArr'
+export * from './omitRange'
+export * from './flatMap'
