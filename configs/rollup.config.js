@@ -25,23 +25,26 @@ const inputs = {
   url: 'src/url',
 }
 
-const plugins = [
-  DEV_MODE && buildHook(DEV_MODE),
-  replace({
-    "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV)
-  }),
-  resolve(),
-  commonjs({
-    include: 'node_modules/**',
-  }),
-  babel({
-    exclude: 'node_modules/**',
-    runtimeHelpers: true,
-    ...babelConfig
-  }),
-  sourcemaps(),
-  cleanup(),
-]
+const buildPlugins = (type, extra) => {
+  return [
+    ...(extra.plugins || []),
+    DEV_MODE && buildHook(type),
+    replace({
+      "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV)
+    }),
+    resolve(),
+    commonjs({
+      include: 'node_modules/**',
+    }),
+    babel({
+      exclude: 'node_modules/**',
+      runtimeHelpers: true,
+      ...babelConfig
+    }),
+    sourcemaps(),
+    cleanup(),
+  ]
+}
 
 const buildConfig = (type, extra={}) => {
   return {
@@ -54,10 +57,7 @@ const buildConfig = (type, extra={}) => {
       format: type,
       ...extra.output
     },
-    plugins: [
-      ...(extra.plugins || []),
-      ...plugins,
-    ],
+    plugins: buildPlugins(type, extra),
     watch: { clearScreen: false },
   }
 }

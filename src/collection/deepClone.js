@@ -57,10 +57,10 @@ export const deepClone = (obj, hash = new WeakMap()) => {
  * @returns {Object} the cloned object 
  */
 export const cloneObjWithPrototypeAndProperties = (objectWithPrototype) => {
+
   if (!objectWithPrototype) return objectWithPrototype
 
   const prototype = Object.getPrototypeOf(objectWithPrototype)
-  
   const sourceDescriptors = Object.getOwnPropertyDescriptors(objectWithPrototype)
 
   for (const [key, descriptor] of Object.entries(sourceDescriptors)) {

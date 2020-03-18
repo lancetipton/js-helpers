@@ -31,14 +31,23 @@ export default function buildHook(devMode){
   return {
     name: 'buildHook',
     buildEnd: async () => {
-      
-      const fromLoc = path.join(__dirname, '../')
-      const toLoc = path.join(__dirname, '../../../../tdt/td_modules/jTree/app/node_modules/jsutils')
 
-      await runCmd(`cp -rf ${fromLoc}/build ${toLoc}/build`)
-      await runCmd(`cp -rf ${fromLoc}/package.json ${toLoc}/package.json`)
-      await runCmd(`cp -rf ${fromLoc}/src ${toLoc}/src`)
+      if(devMode !== 'esm') return
+
+      const fromLoc = path.join(__dirname, '../')
+      const appLoc = path.join(__dirname, '../../../../tdt/td_modules/jTree/app/node_modules/jsutils')
+      const jTreeLoc = path.join(__dirname, '../../../../tdt/td_modules/jTree/node_modules/jsutils')
+
+      await runCmd(`rm -rf ${appLoc}/build`)
+      await runCmd(`cp -rf ${fromLoc}/build ${appLoc}/build`)
+      await runCmd(`cp -rf ${fromLoc}/package.json ${appLoc}/package.json`)
+      await runCmd(`cp -rf ${fromLoc}/src ${appLoc}/src`)
       
+      await runCmd(`rm -rf ${jTreeLoc}/build`)
+      await runCmd(`cp -rf ${fromLoc}/build ${jTreeLoc}/build`)
+      await runCmd(`cp -rf ${fromLoc}/package.json ${jTreeLoc}/package.json`)
+      await runCmd(`cp -rf ${fromLoc}/src ${jTreeLoc}/src`)
+
       console.log(`---------- finished copy ----------`)
       
       return true
