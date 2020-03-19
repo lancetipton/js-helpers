@@ -2,39 +2,29 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-var isArr = require('./isArr-099800b1.js');
-var isFunc = require('./isFunc-cafb7691.js');
-var isNum = require('./isNum-e8ce2740.js');
-var cloneFunc = require('./cloneFunc-d8134d8a.js');
-var typeOf = require('./typeOf-273242b3.js');
-var hasOwn = require('./hasOwn-ef95a3fb.js');
+var isArr = require('./isArr-39234014.js');
+var isNum = require('./isNum-c7164b50.js');
+var isFunc = require('./isFunc-f93803cb.js');
+require('./isColl-5757310a.js');
+require('./get-711365f4.js');
+var cloneFunc = require('./cloneFunc-6f1b4c75.js');
+var typeOf = require('./typeOf-51fe5771.js');
+var hasOwn = require('./hasOwn-7999ca65.js');
 
-var checkCall = function checkCall(method) {
-  for (var _len = arguments.length, params = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-    params[_key - 1] = arguments[_key];
-  }
-  return isFunc.isFunc(method) && method.apply(void 0, params) || undefined;
-};
+const checkCall = (method, ...params) => isFunc.isFunc(method) && method(...params) || undefined;
 
-var eitherFunc = function eitherFunc(func1, func2) {
-  return isFunc.isFunc(func1) && func1 || func2;
-};
+const eitherFunc = (func1, func2) => isFunc.isFunc(func1) && func1 || func2;
 
-var debounce = function debounce(func) {
-  var wait = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 250;
-  var immediate = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-  var timeout;
-  function wrapFunc() {
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
+const debounce = (func, wait = 250, immediate = false) => {
+  let timeout;
+  function wrapFunc(...args) {
     if (!isFunc.isFunc(func)) return null;
-    var context = this;
-    var later = function later() {
+    const context = this;
+    const later = () => {
       timeout = null;
       !immediate && func.apply(context, args);
     };
-    var callNow = immediate && !timeout;
+    const callNow = immediate && !timeout;
     clearTimeout(timeout);
     timeout = setTimeout(later, wait);
     if (callNow) return isFunc.isFunc(func) && func.apply(context, args);
@@ -42,113 +32,88 @@ var debounce = function debounce(func) {
   return wrapFunc;
 };
 
-var doIt = function doIt() {
-  for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-    args[_key] = arguments[_key];
-  }
-  var params = args.slice();
-  var num = params.shift();
-  var bindTo = params.shift();
-  var cb = params.pop();
+const doIt = (...args) => {
+  const params = args.slice();
+  const num = params.shift();
+  const bindTo = params.shift();
+  const cb = params.pop();
   if (!isNum.isNum(num) || !isFunc.isFunc(cb)) return [];
-  var doItAmount = new Array(num);
-  var responses = [];
-  for (var i = 0; i < doItAmount.length; i++) {
-    var data = cb.call.apply(cb, [bindTo, i].concat(isFunc._toConsumableArray(params)));
+  const doItAmount = new Array(num);
+  const responses = [];
+  for (let i = 0; i < doItAmount.length; i++) {
+    const data = cb.call(bindTo, i, ...params);
     if (data === false) break;
     responses.push(data);
   }
   return responses;
 };
 
-var memorize = function memorize(func, getCacheKey) {
-  var limit = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;
+const memorize = (func, getCacheKey, limit = 1) => {
   if (!isFunc.isFunc(func) || getCacheKey && !isFunc.isFunc(getCacheKey)) return console.error('Error: Expected a function', func, getCacheKey);
-  var _memorized = function memorized() {
-    var cache = _memorized.cache;
-    var key = getCacheKey ? getCacheKey.apply(this, arguments) : arguments[0];
+  let memorized = function () {
+    const cache = memorized.cache;
+    const key = getCacheKey ? getCacheKey.apply(this, arguments) : arguments[0];
     if (hasOwn.hasOwn(cache, key)) return cache[key];
-    var result = func.apply(this, arguments);
-    isNum.isNum(limit) && Object.keys(cache).length < limit ? cache[key] = result : _memorized.cache = isFunc._defineProperty({}, key, result);
+    const result = func.apply(this, arguments);
+    isNum.isNum(limit) && Object.keys(cache).length < limit ? cache[key] = result : memorized.cache = {
+      [key]: result
+    };
     return result;
   };
-  _memorized.cache = {};
-  _memorized.destroy = function () {
+  memorized.cache = {};
+  memorized.destroy = () => {
     getCacheKey = undefined;
-    _memorized.cache = undefined;
-    _memorized.destroy = undefined;
-    _memorized = undefined;
+    memorized.cache = undefined;
+    memorized.destroy = undefined;
+    memorized = undefined;
   };
-  return _memorized;
+  return memorized;
 };
 
-var throttle = function throttle(func) {
-  var wait = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 100;
-  var waiting = false;
-  return function () {
+const throttle = (func, wait = 100) => {
+  let waiting = false;
+  return function (...args) {
     if (waiting) return;
     waiting = true;
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
     func.apply(this, args);
-    return setTimeout(function () {
+    return setTimeout(() => {
       waiting = false;
     }, wait);
   };
 };
 
-var throttleLast = function throttleLast(func, cb) {
-  var wait = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 100;
-  var throttleTimeout;
-  return function () {
-    var _this = this;
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
+const throttleLast = (func, cb, wait = 100) => {
+  let throttleTimeout;
+  return function (...args) {
     if (throttleTimeout) clearTimeout(throttleTimeout);
-    throttleTimeout = setTimeout(function () {
-      func.apply(_this, args);
+    throttleTimeout = setTimeout(() => {
+      func.apply(this, args);
       clearTimeout(throttleTimeout);
     }, wait);
     typeof cb === 'function' && cb();
   };
 };
 
-var limbo = function limbo(promise) {
-  return !promise || !isFunc.isFunc(promise.then) ? [new Error("A promise or thenable is required as the first argument!"), null] : promise.then(function (data) {
-    return [null, data];
-  })["catch"](function (err) {
-    return [err, undefined];
-  });
+const limbo = promise => {
+  return !promise || !isFunc.isFunc(promise.then) ? [new Error(`A promise or thenable is required as the first argument!`), null] : promise.then(data => [null, data]).catch(err => [err, undefined]);
 };
 
-var uuid = function uuid(a) {
-  return a ? (a ^ Math.random() * 16 >> a / 4).toString(16) : ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, uuid);
-};
+const uuid = a => a ? (a ^ Math.random() * 16 >> a / 4).toString(16) : ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, uuid);
 
-var match = function match(matchArg) {
-  for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-    args[_key - 1] = arguments[_key];
-  }
+const match = (matchArg, ...args) => {
   if (!args.length) return null;
-  for (var _i = 0, _args = args; _i < _args.length; _i++) {
-    var entry = _args[_i];
+  for (let entry of args) {
     if (!isArr.isArr(entry)) {
-      console.error("Matching case must be an entry (a 2-element array). Found: ".concat(typeOf.typeOf(entry)), entry);
+      console.error(`Matching case must be an entry (a 2-element array). Found: ${typeOf.typeOf(entry)}`, entry);
       break;
     }
-    var _entry = isFunc._slicedToArray(entry, 2),
-        caseValueOrPredicate = _entry[0],
-        valueOnMatch = _entry[1];
+    const [caseValueOrPredicate, valueOnMatch] = entry;
     if (isFunc.isFunc(caseValueOrPredicate) && caseValueOrPredicate(matchArg)) return valueOnMatch;
     if (caseValueOrPredicate === matchArg) return valueOnMatch;
   }
   return null;
 };
-match["default"] = function () {
-  return true;
-};
+match.default = () => true;
 
 exports.isFunc = isFunc.isFunc;
 exports.cloneFunc = cloneFunc.cloneFunc;

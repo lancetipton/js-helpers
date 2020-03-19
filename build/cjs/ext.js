@@ -2,34 +2,26 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-var isArr = require('./isArr-099800b1.js');
-var isFunc = require('./isFunc-cafb7691.js');
-var isObj = require('./isObj-ffedee44.js');
-var isNum = require('./isNum-e8ce2740.js');
-require('./isBool-102c91d0.js');
-require('./toBool-5478ef10.js');
-var isStr = require('./isStr-1e4ba1f4.js');
-require('./toStr-ad9e855c.js');
-var softFalsy = require('./softFalsy-cb2c001d.js');
-require('./toNum-52f991fa.js');
-var strToType = require('./strToType-c04fb9b0.js');
-var typeOf = require('./typeOf-273242b3.js');
+var isArr = require('./isArr-39234014.js');
+var isObj = require('./isObj-6b3aa807.js');
+var isNum = require('./isNum-c7164b50.js');
+var isFunc = require('./isFunc-f93803cb.js');
+require('./isBool-aa6af74e.js');
+require('./toBool-cb75ca6a.js');
+var isStr = require('./isStr-8a57710e.js');
+require('./toStr-8e499966.js');
+var softFalsy = require('./softFalsy-3d7ead1c.js');
+require('./toNum-eeb2e51e.js');
+var strToType = require('./strToType-56d619a5.js');
+var typeOf = require('./typeOf-51fe5771.js');
 
-var either = function either(val1, val2, check) {
-  return !isFunc.isFunc(check) ? softFalsy.softFalsy(val1) && val1 || val2 : check(val1, val2) && val1 || val2;
-};
+const either = (val1, val2, check) => !isFunc.isFunc(check) ? softFalsy.softFalsy(val1) && val1 || val2 : check(val1, val2) && val1 || val2;
 
-var isEmpty = function isEmpty(val) {
-  return isObj.isObj(val) ? Object.keys(val).length === 0 : isArr.isArr(val) ? val.length === 0 : isStr.isStr(val) ? val.trim().length === 0 : isNum.isNum(val) ? val < 1 : false;
-};
+const isEmpty = val => isObj.isObj(val) ? Object.keys(val).length === 0 : isArr.isArr(val) ? val.length === 0 : isStr.isStr(val) ? val.trim().length === 0 : isNum.isNum(val) ? val < 1 : false;
 
-var isSame = function isSame(val1, val2) {
-  return val1 === val2 ? val1 !== 0 || 1 / val1 === 1 / val2 : val1 !== val1 && val2 !== val2;
-};
+const isSame = (val1, val2) => val1 === val2 ? val1 !== 0 || 1 / val1 === 1 / val2 : val1 !== val1 && val2 !== val2;
 
-var isValidDate = function isValidDate(date) {
-  return !isNaN((date instanceof Date && date || new Date(date)).getTime());
-};
+const isValidDate = date => !isNaN((date instanceof Date && date || new Date(date)).getTime());
 
 exports.strToType = strToType.strToType;
 exports.typeOf = typeOf.typeOf;

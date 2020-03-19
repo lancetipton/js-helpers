@@ -1,26 +1,26 @@
-import { i as isArr } from './isArr-3adaec3d.js';
-import { d as _typeof, i as isFunc, a as _slicedToArray, _ as _toConsumableArray, b as _objectSpread2, c as _defineProperty } from './isFunc-9054cb6e.js';
-import { i as isObj } from './isObj-d0afe56c.js';
-export { i as isObj } from './isObj-d0afe56c.js';
-import { i as isNum } from './isNum-c9e7e2d6.js';
-import './isBool-f1457797.js';
-import './toBool-efea676b.js';
-import { i as isStr } from './isStr-90966827.js';
-import './toStr-ff0731f8.js';
-import { i as isColl } from './isColl-66968d37.js';
-import './updateColl-4f0fb406.js';
-import { s as set, d as deepClone } from './deepClone-66817196.js';
-import './cloneFunc-db25541f.js';
-import './toNum-d3e6ee15.js';
-import { s as strToType } from './strToType-8ff6f1dc.js';
+import { i as isArr } from './isArr-a4420764.js';
+import { i as isObj } from './isObj-2a71d1af.js';
+export { i as isObj } from './isObj-2a71d1af.js';
+import { i as isNum } from './isNum-cc6ad9ca.js';
+import { i as isFunc } from './isFunc-40ceeef8.js';
+import './isBool-4d844d9e.js';
+import './toBool-32bfbbdb.js';
+import { i as isStr } from './isStr-481ce69b.js';
+import './toStr-0e5fe94c.js';
+import { i as isColl } from './isColl-15a1452b.js';
+import './get-e0378510.js';
+import { s as set, d as deepClone } from './deepClone-c429ffa5.js';
+import { c as cloneFunc } from './cloneFunc-1aaa9008.js';
+import './toNum-537197a6.js';
+import { s as strToType } from './strToType-b680e356.js';
 import { logData } from './log.js';
-import { p as pipeline } from './hasOwn-f93f9c85.js';
-export { h as hasOwn } from './hasOwn-f93f9c85.js';
-import { r as reduceObj } from './reduceObj-ce655425.js';
-export { r as reduceObj } from './reduceObj-ce655425.js';
-import { s as sanitize } from './sanitize-42a6d642.js';
+import { p as pipeline } from './hasOwn-deb5bbb8.js';
+export { h as hasOwn } from './hasOwn-deb5bbb8.js';
+import { r as reduceObj } from './reduceObj-7d9f0ad1.js';
+export { r as reduceObj } from './reduceObj-7d9f0ad1.js';
+import { s as sanitize } from './sanitize-2f5be6f2.js';
 
-var cloneJson = function cloneJson(obj) {
+const cloneJson = obj => {
   try {
     return JSON.parse(JSON.stringify(obj));
   } catch (e) {
@@ -29,99 +29,82 @@ var cloneJson = function cloneJson(obj) {
   }
 };
 
-var isEntry = function isEntry(maybeEntry) {
-  return isArr(maybeEntry) && maybeEntry.length === 2 && (isNum(maybeEntry[0]) || isStr(maybeEntry[0]));
-};
+const isEntry = maybeEntry => isArr(maybeEntry) && maybeEntry.length === 2 && (isNum(maybeEntry[0]) || isStr(maybeEntry[0]));
 
-var mapEntries = function mapEntries(obj, cb) {
+const mapEntries = (obj, cb) => {
   if (!isArr(obj) && !isObj(obj)) {
-    console.error(obj, "Expected array or object for obj. Found ".concat(_typeof(obj)));
+    console.error(obj, `Expected array or object for obj. Found ${typeof obj}`);
     return obj;
   }
   if (!isFunc(cb)) {
-    console.error("Expected function for cb. Found ".concat(_typeof(cb)));
+    console.error(`Expected function for cb. Found ${typeof cb}`);
     return obj;
   }
-  var entries = Object.entries(obj);
-  var initialValue = isArr(obj) ? [] : {};
-  return entries.reduce(function (obj, _ref) {
-    var _ref2 = _slicedToArray(_ref, 2),
-        key = _ref2[0],
-        value = _ref2[1];
-    var result = cb(key, value);
+  const entries = Object.entries(obj);
+  const initialValue = isArr(obj) ? [] : {};
+  return entries.reduce((obj, [key, value]) => {
+    const result = cb(key, value);
     if (!isEntry(result)) {
-      console.error("Callback function must return entry. Found: ".concat(result, ". Using current entry instead."));
+      console.error(`Callback function must return entry. Found: ${result}. Using current entry instead.`);
       return set(obj, key, value);
     }
     return set(obj, result[0], result[1]);
   }, initialValue);
 };
 
-var mapKeys = function mapKeys(obj, keyMapper) {
+const mapKeys = (obj, keyMapper) => {
   if (!isObj(obj) || !isFunc(keyMapper)) return obj;
-  return mapEntries(obj, function (key, value) {
-    return [keyMapper(key), value];
-  });
+  return mapEntries(obj, (key, value) => [keyMapper(key), value]);
 };
 
-var clearObj = function clearObj(obj, filter) {
-  obj && Object.entries(obj).map(function (_ref) {
-    var _ref2 = _slicedToArray(_ref, 2),
-        key = _ref2[0],
-        value = _ref2[1];
+const clearObj = (obj, filter) => {
+  obj && Object.entries(obj).map(([key, value]) => {
     if (filter && filter.indexOf(key) !== -1) return;
-    if (_typeof(value) === 'object') clearObj(value);
+    if (typeof value === 'object') clearObj(value);
     obj[key] = undefined;
     delete obj[key];
   });
 };
 
-var eitherObj = function eitherObj(obj1, obj2) {
-  return isObj(obj1) && obj1 || obj2;
-};
+const eitherObj = (obj1, obj2) => isObj(obj1) && obj1 || obj2;
 
-var deepFreeze = function deepFreeze(obj) {
+const deepFreeze = obj => {
   Object.freeze(obj);
-  Object.getOwnPropertyNames(obj).map(function (prop) {
-    obj.hasOwnProperty(prop) && obj[prop] !== null && (_typeof(obj[prop]) === 'object' || isFunc(obj[prop])) && !Object.isFrozen(obj[prop]) && deepFreeze(obj[prop]);
+  Object.getOwnPropertyNames(obj).map(prop => {
+    obj.hasOwnProperty(prop) && obj[prop] !== null && (typeof obj[prop] === 'object' || isFunc(obj[prop])) && !Object.isFrozen(obj[prop]) && deepFreeze(obj[prop]);
   });
   return obj;
 };
 
-var deepMerge = function deepMerge() {
-  for (var _len = arguments.length, sources = new Array(_len), _key = 0; _key < _len; _key++) {
-    sources[_key] = arguments[_key];
-  }
-  return sources.reduce(function (merged, source) {
-    return isArr(source)
-    ? [].concat(_toConsumableArray(isArr(merged) && merged || []), _toConsumableArray(deepClone(source)))
-    : isObj(source)
-    ? Object.entries(source).reduce(function (joined, _ref) {
-      var _ref2 = _slicedToArray(_ref, 2),
-          key = _ref2[0],
-          value = _ref2[1];
-      return _objectSpread2({}, joined, _defineProperty({}, key, isColl(value) && key in joined
-      ? deepMerge(joined[key], deepClone(value))
-      : deepClone(value)));
-    }, merged)
+const deepMerge = (...sources) => {
+  return sources.reduce((merged, source) => {
+    const srcCopy = deepClone(source);
+    return isArr(srcCopy)
+    ? [...(isArr(merged) && merged || []), ...srcCopy]
+    : isObj(srcCopy)
+    ? Object.entries(srcCopy).reduce((joined, [key, value]) => ({ ...joined,
+      [key]: isFunc(value) ? cloneFunc(value)
+      : isColl(value) && key in joined
+      ? deepMerge(joined[key], value)
+      : deepClone(value)
+    }), merged)
     : merged;
-  },
-  isArr(sources[0]) && [] || {});
+  }, isArr(sources[0]) && [] || {});
 };
 
-var applyToCloneOf = function applyToCloneOf(obj, mutatorCb) {
-  var error;
+const applyToCloneOf = (obj, mutatorCb) => {
+  let error;
   if (!obj) error = 'object (Argument 1) in applyToCloneOf, must be defined!';
   if (!isObj(obj)) error = 'object (Argument 1) in applyToCloneOf, must be an object!';
   if (!mutatorCb) error = 'mutator (Argument 2) in applyToCloneOf, must be defined!';
   if (!isFunc(mutatorCb)) error = 'mutator (Argument 2) arg in applyToCloneOf, must be a function!';
   if (error) return console.warn(error) || obj;
-  var clone = deepClone(obj);
+  const clone = deepClone(obj);
   mutatorCb(clone);
   return clone;
 };
 
-var jsonEqual = function jsonEqual(one, two) {
+const jsonEqual = (one, two) => {
   try {
     return JSON.stringify(one) === JSON.stringify(two);
   } catch (e) {
@@ -129,128 +112,90 @@ var jsonEqual = function jsonEqual(one, two) {
   }
 };
 
-var mapObj = function mapObj(obj, cb) {
-  return isObj(obj) && isFunc(cb) && Object.entries(obj).map(function (_ref) {
-    var _ref2 = _slicedToArray(_ref, 2),
-        key = _ref2[0],
-        value = _ref2[1];
-    return cb(key, value);
-  }) || obj;
-};
+const mapObj = (obj, cb) => isObj(obj) && isFunc(cb) && Object.entries(obj).map(([key, value]) => cb(key, value)) || obj;
 
-var omitKeys = function omitKeys() {
-  var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-  var keys = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
-  return isObj(obj) && reduceObj(obj, function (key, _, updated) {
-    keys.indexOf(key) === -1 && (updated[key] = obj[key]);
-    return updated;
-  }, {}) || {};
-};
+const omitKeys = (obj = {}, keys = []) => isObj(obj) && reduceObj(obj, (key, _, updated) => {
+  keys.indexOf(key) === -1 && (updated[key] = obj[key]);
+  return updated;
+}, {}) || {};
 
-var pickKeys = function pickKeys() {
-  var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-  var keys = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
-  return isObj(obj) && keys.reduce(function (updated, key) {
-    key in obj && (updated[key] = obj[key]);
-    return updated;
-  }, {}) || {};
-};
+const pickKeys = (obj = {}, keys = []) => isObj(obj) && keys.reduce((updated, key) => {
+  key in obj && (updated[key] = obj[key]);
+  return updated;
+}, {}) || {};
 
-var sanitizeCopy = function sanitizeCopy(obj) {
-  return JSON.parse(sanitize(JSON.stringify(obj)));
-};
+const sanitizeCopy = obj => JSON.parse(sanitize(JSON.stringify(obj)));
 
-var trimStringFields = function trimStringFields(object) {
-  return Object.entries(object).reduce(function (cleaned, _ref) {
-    var _ref2 = _slicedToArray(_ref, 2),
-        key = _ref2[0],
-        value = _ref2[1];
-    cleaned[key] = isStr(value) ? value.trim() : value;
-    return cleaned;
-  }, object);
-};
+const trimStringFields = object => Object.entries(object).reduce((cleaned, [key, value]) => {
+  cleaned[key] = isStr(value) ? value.trim() : value;
+  return cleaned;
+}, object);
 
-var toObj = function toObj(val, divider, split) {
-  if (isArr(val)) return Object.keys(val).reduce(function (obj, key) {
+const toObj = (val, divider, split) => {
+  if (isArr(val)) return Object.keys(val).reduce((obj, key) => {
     obj[key] = val[key];
     return obj;
   }, {});
   if (!isStr(str)) return {};
   divider = divider || '=';
   split = split || '&';
-  return str.split(split).reduce(function (obj, item) {
-    var sep = item.split(divider);
+  return str.split(split).reduce((obj, item) => {
+    const sep = item.split(divider);
     obj[sep[0].trim()] = strToType(sep[1].trim());
     return obj;
   }, {});
 };
 
-var keyMap = function keyMap(arr, toUpperCase) {
-  return isArr(arr) && arr.reduce(function (obj, key) {
-    if (!isStr(key)) return obj;
-    var use = toUpperCase && key.toUpperCase() || key;
-    obj[use] = use;
-    return obj;
-  }, {}) || {};
-};
+const keyMap = (arr, toUpperCase) => isArr(arr) && arr.reduce((obj, key) => {
+  if (!isStr(key)) return obj;
+  const use = toUpperCase && key.toUpperCase() || key;
+  obj[use] = use;
+  return obj;
+}, {}) || {};
 
-var everyEntry = function everyEntry(obj, predicate) {
+const everyEntry = (obj, predicate) => {
   if (!obj) {
-    console.error("everyEntry expects argument obj [".concat(obj, "] to be defined."));
+    console.error(`everyEntry expects argument obj [${obj}] to be defined.`);
     return false;
   }
   if (!isObj(obj)) {
-    console.error("Argument obj ".concat(obj, " must be an object."));
+    console.error(`Argument obj ${obj} must be an object.`);
     return false;
   }
   if (!isFunc(predicate)) {
-    console.error("Argument 'predicate' passed into everyEntry must a function. Found: ".concat(predicate));
+    console.error(`Argument 'predicate' passed into everyEntry must a function. Found: ${predicate}`);
     return false;
   }
-  return pipeline(obj, Object.entries, function (entries) {
-    return entries.every(function (_ref) {
-      var _ref2 = _slicedToArray(_ref, 2),
-          key = _ref2[0],
-          value = _ref2[1];
-      return predicate(key, value);
-    });
-  });
+  return pipeline(obj, Object.entries, entries => entries.every(([key, value]) => predicate(key, value)));
 };
 
-var someEntry = function someEntry(obj, predicate) {
+const someEntry = (obj, predicate) => {
   if (!obj) {
-    console.error("someEntry expects argument obj [".concat(obj, "] to be defined."));
+    console.error(`someEntry expects argument obj [${obj}] to be defined.`);
     return false;
   }
   if (!isObj(obj)) {
-    console.error("Argument obj ".concat(obj, " must be an object."));
+    console.error(`Argument obj ${obj} must be an object.`);
     return false;
   }
   if (!isFunc(predicate)) {
-    console.error("Argument 'predicate' passed into someEntry must a function. Found: ".concat(predicate));
+    console.error(`Argument 'predicate' passed into someEntry must a function. Found: ${predicate}`);
     return false;
   }
-  return pipeline(obj, Object.entries, function (entries) {
-    return entries.some(function (_ref) {
-      var _ref2 = _slicedToArray(_ref, 2),
-          key = _ref2[0],
-          value = _ref2[1];
-      return predicate(key, value);
-    });
-  });
+  return pipeline(obj, Object.entries, entries => entries.some(([key, value]) => predicate(key, value)));
 };
 
-var filterObj = function filterObj(obj, predicate) {
+const filterObj = (obj, predicate) => {
   if (!obj) return obj;
   if (!isObj(obj)) {
-    console.error("Object ".concat(obj, " was not an object. It must be for filterObject"));
+    console.error(`Object ${obj} was not an object. It must be for filterObject`);
     return obj;
   }
   if (!isFunc(predicate)) {
-    console.error("Argument 'predicate' passed into filterObject must a function. Found: ".concat(predicate));
+    console.error(`Argument 'predicate' passed into filterObject must a function. Found: ${predicate}`);
     return obj;
   }
-  return reduceObj(obj, function (key, value, data) {
+  return reduceObj(obj, (key, value, data) => {
     if (predicate(key, value)) data[key] = value;
     return data;
   }, {});

@@ -1,27 +1,23 @@
-import { i as isNum, e as equalsNaN } from './isNum-c9e7e2d6.js';
-export { e as equalsNaN, i as isNum } from './isNum-c9e7e2d6.js';
-export { i as isNonNegative } from './isNonNegative-e4ab7190.js';
-import './isStr-90966827.js';
-import './toStr-ff0731f8.js';
-import { g as getNums, t as toNum } from './toNum-d3e6ee15.js';
-export { g as getNums, t as toNum } from './toNum-d3e6ee15.js';
+import { i as isNum, e as equalsNaN } from './isNum-cc6ad9ca.js';
+export { e as equalsNaN, i as isNum } from './isNum-cc6ad9ca.js';
+export { i as isNonNegative } from './isNonNegative-76ec0014.js';
+import './isStr-481ce69b.js';
+import './toStr-0e5fe94c.js';
+import { g as getNums, t as toNum } from './toNum-537197a6.js';
+export { g as getNums, t as toNum } from './toNum-537197a6.js';
 
-var isFloat = function isFloat(val) {
-  return isNum(val) && val % 1 !== 0;
-};
+const isFloat = val => isNum(val) && val % 1 !== 0;
 
-var isInt = function isInt(val) {
-  return isNum(val) && val % 1 === 0;
-};
+const isInt = val => isNum(val) && val % 1 === 0;
 
-var nth = function nth(num) {
+const nth = num => {
   if (!isNum(num)) {
     num = getNums(num);
     if (!num) return '';
     num = toNum(num);
     if (equalsNaN(num)) return '';
   }
-  var mod = num % 100;
+  const mod = num % 100;
   if (mod >= 10 && mod <= 20) return 'th';
   switch (num % 10) {
     case 1:
@@ -35,12 +31,8 @@ var nth = function nth(num) {
   }
 };
 
-var toFloat = function toFloat(val) {
-  return val && !equalsNaN(val) && parseFloat(isNum(val) && val || getNums(val)) || 0;
-};
+const toFloat = val => val && !equalsNaN(val) && parseFloat(isNum(val) && val || getNums(val)) || 0;
 
-var toInt = function toInt(val) {
-  return val && !equalsNaN(val) && parseInt(isNum(val) && val || getNums(val)) || 0;
-};
+const toInt = val => val && !equalsNaN(val) && parseInt(isNum(val) && val || getNums(val)) || 0;
 
 export { isFloat, isInt, nth, toFloat, toInt };

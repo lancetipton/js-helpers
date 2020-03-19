@@ -64,7 +64,8 @@ export const cloneObjWithPrototypeAndProperties = (objectWithPrototype) => {
   const sourceDescriptors = Object.getOwnPropertyDescriptors(objectWithPrototype)
 
   for (const [key, descriptor] of Object.entries(sourceDescriptors)) {
-    sourceDescriptors[key].value = deepClone(descriptor.value)
+    descriptor.value &&
+      ( sourceDescriptors[key].value = deepClone(descriptor.value) )
   }
 
   const clone = Object.create(prototype, sourceDescriptors)

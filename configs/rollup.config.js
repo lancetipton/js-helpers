@@ -55,6 +55,7 @@ const buildConfig = (type, extra={}) => {
     output: extra.output || {
       dir: `${buildPath}/${type}`,
       format: type,
+      sourcemaps: true,
       ...extra.output
     },
     plugins: buildPlugins(type, extra),

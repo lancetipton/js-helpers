@@ -1,5 +1,7 @@
 /** @module functions */
 
+import { get } from '../collection/get'
+
 /**
  * Clones a function using the Function constructor and calling toString on the passed in function
  * @example
@@ -12,13 +14,13 @@
  * @returns {Object} cloned function
  */
 export const cloneFunc = func => {
-  const funcRef = func
-  const funcWrap = function(...args) { return new funcRef(...args) }
 
   const funcClone = function(...args){
     return func instanceof funcClone
-      ? funcWrap.apply(null, args)
-      : funcRef.apply(func, args)
+      ? (() => { return new func(...args) })()
+      : get(func.prototype, 'constructor.name')
+        ? new func(...args)
+        : func.apply(func, args)
   }
 
   for(let key in func )

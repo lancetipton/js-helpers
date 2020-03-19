@@ -1,3 +1,5 @@
+
+export * from './cleanColl'
 export * from './get'
 export * from './isColl'
 export * from './isEmptyColl'

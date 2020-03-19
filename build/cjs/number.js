@@ -2,28 +2,24 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-var isNum = require('./isNum-e8ce2740.js');
-var isNonNegative = require('./isNonNegative-e4e43dcb.js');
-require('./isStr-1e4ba1f4.js');
-require('./toStr-ad9e855c.js');
-var toNum = require('./toNum-52f991fa.js');
+var isNum = require('./isNum-c7164b50.js');
+var isNonNegative = require('./isNonNegative-9959647c.js');
+require('./isStr-8a57710e.js');
+require('./toStr-8e499966.js');
+var toNum = require('./toNum-eeb2e51e.js');
 
-var isFloat = function isFloat(val) {
-  return isNum.isNum(val) && val % 1 !== 0;
-};
+const isFloat = val => isNum.isNum(val) && val % 1 !== 0;
 
-var isInt = function isInt(val) {
-  return isNum.isNum(val) && val % 1 === 0;
-};
+const isInt = val => isNum.isNum(val) && val % 1 === 0;
 
-var nth = function nth(num) {
+const nth = num => {
   if (!isNum.isNum(num)) {
     num = toNum.getNums(num);
     if (!num) return '';
     num = toNum.toNum(num);
     if (isNum.equalsNaN(num)) return '';
   }
-  var mod = num % 100;
+  const mod = num % 100;
   if (mod >= 10 && mod <= 20) return 'th';
   switch (num % 10) {
     case 1:
@@ -37,13 +33,9 @@ var nth = function nth(num) {
   }
 };
 
-var toFloat = function toFloat(val) {
-  return val && !isNum.equalsNaN(val) && parseFloat(isNum.isNum(val) && val || toNum.getNums(val)) || 0;
-};
+const toFloat = val => val && !isNum.equalsNaN(val) && parseFloat(isNum.isNum(val) && val || toNum.getNums(val)) || 0;
 
-var toInt = function toInt(val) {
-  return val && !isNum.equalsNaN(val) && parseInt(isNum.isNum(val) && val || toNum.getNums(val)) || 0;
-};
+const toInt = val => val && !isNum.equalsNaN(val) && parseInt(isNum.isNum(val) && val || toNum.getNums(val)) || 0;
 
 exports.equalsNaN = isNum.equalsNaN;
 exports.isNum = isNum.isNum;

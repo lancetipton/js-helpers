@@ -1,27 +1,27 @@
-import { i as isArr } from './isArr-3adaec3d.js';
-import './isFunc-9054cb6e.js';
-import './isObj-d0afe56c.js';
-import { i as isNum } from './isNum-c9e7e2d6.js';
-import { i as isBool } from './isBool-f1457797.js';
-import { i as isStr } from './isStr-90966827.js';
-import { i as isColl } from './isColl-66968d37.js';
-import { r as reduceObj } from './reduceObj-ce655425.js';
+import { i as isArr } from './isArr-a4420764.js';
+import './isObj-2a71d1af.js';
+import { i as isNum } from './isNum-cc6ad9ca.js';
+import './isFunc-40ceeef8.js';
+import { i as isBool } from './isBool-4d844d9e.js';
+import { i as isStr } from './isStr-481ce69b.js';
+import { i as isColl } from './isColl-15a1452b.js';
+import { r as reduceObj } from './reduceObj-7d9f0ad1.js';
 
-var queryToObj = function queryToObj(string) {
-  var currentQueryItems = {};
-  var stringSplit = string.split('?');
-  var querystring = stringSplit[stringSplit.length - 1];
+const queryToObj = string => {
+  const currentQueryItems = {};
+  const stringSplit = string.split('?');
+  const querystring = stringSplit[stringSplit.length - 1];
   if (!querystring) return currentQueryItems;
-  var split = querystring.split('&');
-  split.length && split.map(function (item) {
-    var components = item.split('=');
+  const split = querystring.split('&');
+  split.length && split.map(item => {
+    const components = item.split('=');
     if (components.length <= 1) return currentQueryItems;
-    var itemSplit = [components.shift(), components.join('=')];
+    const itemSplit = [components.shift(), components.join('=')];
     if (itemSplit.length === 2) {
-      var array = decodeURIComponent(itemSplit[1]).split(',');
+      const array = decodeURIComponent(itemSplit[1]).split(',');
       if (array && array.length > 1) currentQueryItems[itemSplit[0]] = array;
       else if (itemSplit[0] in currentQueryItems) {
-          var val = currentQueryItems[itemSplit[0]];
+          const val = currentQueryItems[itemSplit[0]];
           currentQueryItems[itemSplit[0]] = isArr(val) ? val.push(decodeURIComponent(itemSplit[1])) : [val, decodeURIComponent(itemSplit[1])];
         } else currentQueryItems[itemSplit[0]] = decodeURIComponent(itemSplit[1]);
     }
@@ -29,19 +29,19 @@ var queryToObj = function queryToObj(string) {
   return currentQueryItems;
 };
 
-var objToQuery = function objToQuery(obj) {
-  var firstSet;
-  return reduceObj(obj, function (key, value, urlStr) {
+const objToQuery = obj => {
+  let firstSet;
+  return reduceObj(obj, (key, value, urlStr) => {
     if (!value) return urlStr;
-    var useVal = isStr(value) || isNum(value) || isBool(value) ? value : isColl(value) ? isArr(value) ? value.join(',') : JSON.stringify(value) : null;
+    const useVal = isStr(value) || isNum(value) || isBool(value) ? value : isColl(value) ? isArr(value) ? value.join(',') : JSON.stringify(value) : null;
     if (!useVal) return urlStr;
-    urlStr = !firstSet ? "?".concat(encodeURIComponent(key), "=").concat(encodeURIComponent(useVal)) : "".concat(urlStr, "&").concat(encodeURIComponent(key), "=").concat(encodeURIComponent(useVal));
+    urlStr = !firstSet ? `?${encodeURIComponent(key)}=${encodeURIComponent(useVal)}` : `${urlStr}&${encodeURIComponent(key)}=${encodeURIComponent(useVal)}`;
     firstSet = true;
     return urlStr;
   }, '');
 };
 
-var isValidUrl = function isValidUrl(string) {
+const isValidUrl = string => {
   var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/;
   return regexp.test(string);
 };
