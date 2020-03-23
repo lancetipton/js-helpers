@@ -25,6 +25,7 @@ const getRelativePath = pathToModule => {
  * @param {Object} config - settings to load the module
  * @param {Path|string} config.rootDir - root directory to load the module from
  * @param {boolean} config.logErrors - should require errors be logged
+ *
  * @returns {Object|function} - Loaded module
  */
 const requireModule = (pathToModule, config) => {
@@ -51,9 +52,10 @@ const requireModule = (pathToModule, config) => {
 /**
  * Checks if the module is a function and calls it
  * <br> Or if it's an object return it
- * @param {*} foundModule - module loaded from require
- * @param {*} params - arguments to pass to the module if it's a function
- * @returns
+ * @param {Object|Array|function} foundModule - module loaded from require
+ * @param {any} params - arguments to pass to the module if it's a function
+ *
+ * @returns {any} - Loaded modules or undefined
  */
 const loadByType = (foundModule, params) => {
   // Check the type of the foundModule

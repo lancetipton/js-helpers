@@ -89,6 +89,7 @@ validate.resetOptions = () => {
  * @param {*} value 
  * @param {Function} validator 
  * @returns {Object} of form { success, reason }
+ * @ignore
  */
 const validateArgument = (key, value, validator) => {
   const success = validator(value)
@@ -111,8 +112,9 @@ const validateArgument = (key, value, validator) => {
 
 /**
  * Helper for `validate`. Reduces validations into a single object of form { success, cases }
- * @param {*} finalResult 
- * @param {*} nextValidation 
+ * @param {*} finalResult
+ * @param {*} nextValidation
+ * @ignore
  */
 const validationReducer = (finalResult, nextValidation, { logs, throws, prefix }) => {
   // handle the failure
@@ -133,6 +135,7 @@ const validationReducer = (finalResult, nextValidation, { logs, throws, prefix }
  * @param {Boolean} shouldLog 
  * @param {Boolean} shouldThrow 
  * @param {String} prefix - optional prefix to any error or console log 
+ * @ignore
  */
 const handleFailure = (validation, shouldLog, shouldThrow, prefix) => {
   // prepend the prefix if one is defined

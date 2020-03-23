@@ -6,6 +6,8 @@ import { isFunc } from '../method/isFunc'
 /**
  * Converts a standard callback method into Promise
  * @param {function} method - method to turn into a promise
+ * @function
+ *
  * @return method as a promise
  */
 export const promisify = method => {

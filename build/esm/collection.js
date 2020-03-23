@@ -1,7 +1,7 @@
 import { i as isArr } from './isArr-a4420764.js';
 import { i as isObj } from './isObj-2a71d1af.js';
-import { i as isNum } from './isNum-cc6ad9ca.js';
 import { i as isFunc } from './isFunc-40ceeef8.js';
+import { i as isNum } from './isNum-cc6ad9ca.js';
 import { i as isStr } from './isStr-481ce69b.js';
 import { i as isColl } from './isColl-15a1452b.js';
 export { i as isColl } from './isColl-15a1452b.js';

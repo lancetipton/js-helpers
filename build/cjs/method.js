@@ -3,8 +3,8 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
 var isArr = require('./isArr-39234014.js');
-var isNum = require('./isNum-c7164b50.js');
 var isFunc = require('./isFunc-f93803cb.js');
+var isNum = require('./isNum-c7164b50.js');
 require('./isColl-5757310a.js');
 require('./get-711365f4.js');
 var cloneFunc = require('./cloneFunc-6f1b4c75.js');

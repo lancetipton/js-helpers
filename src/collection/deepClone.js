@@ -53,6 +53,7 @@ export const deepClone = (obj, hash = new WeakMap()) => {
 /**
  * Helper for deepClone. Deeply clones the object, including its properties, and preserves the prototype and isFrozen and isSealed state
  * @function
+ * @ignore
  * @param {Object} objectWithPrototype - any object that has a prototype
  * @returns {Object} the cloned object 
  */

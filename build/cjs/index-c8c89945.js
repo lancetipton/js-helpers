@@ -2,25 +2,13 @@
 
 var isArr = require('./isArr-39234014.js');
 var isObj = require('./isObj-6b3aa807.js');
-var isNonNegative = require('./isNonNegative-9959647c.js');
 var isFunc = require('./isFunc-f93803cb.js');
-
-const randomArr = (arr, amount) => {
-  if (!isArr.isArr(arr)) return arr;
-  const useAmount = amount || 1;
-  const randoms = [];
-  for (let i = 0; i < useAmount; i++) {
-    randoms.push(arr[Math.floor(Math.random() * arr.length)]);
-  }
-  return !amount ? randoms[0] : randoms;
-};
-
-const randomizeArr = arr => !isArr.isArr(arr) && arr || arr.sort(() => 0.5 - Math.random());
-
-const uniqArr = arr => !isArr.isArr(arr) && arr || arr.filter((e, i, arr) => arr.indexOf(e) == i);
+var isNonNegative = require('./isNonNegative-9959647c.js');
 
 const cloneArr = arr => Array.from([
 ...(isArr.isArr(arr) && arr || isObj.isObj(arr) && Object.entries(arr) || [])]);
+
+const eitherArr = (a, b) => isArr.isArr(a) ? a : b;
 
 const OPTIONS = {
   SHOULD_LOG: true,
@@ -101,21 +89,6 @@ const handleFailure = (validation, shouldLog, shouldThrow, prefix) => {
   if (shouldLog) console.error(...reason);
 };
 
-const omitRange = (arr, startIndex, count) => {
-  const [inputIsValid] = validate({
-    arr,
-    startIndex,
-    count
-  }, {
-    arr: isArr.isArr,
-    $default: isNonNegative.isNonNegative
-  });
-  if (!inputIsValid) return arr;
-  const nextArr = [...arr];
-  nextArr.splice(startIndex, count);
-  return nextArr;
-};
-
 const flatMap = (arr, mapFn) => {
   const [inputIsValid] = validate({
     arr,
@@ -132,8 +105,38 @@ const flatMap = (arr, mapFn) => {
   }, []);
 };
 
+const omitRange = (arr, startIndex, count) => {
+  const [inputIsValid] = validate({
+    arr,
+    startIndex,
+    count
+  }, {
+    arr: isArr.isArr,
+    $default: isNonNegative.isNonNegative
+  });
+  if (!inputIsValid) return arr;
+  const nextArr = [...arr];
+  nextArr.splice(startIndex, count);
+  return nextArr;
+};
+
+const randomArr = (arr, amount) => {
+  if (!isArr.isArr(arr)) return arr;
+  const useAmount = amount || 1;
+  const randoms = [];
+  for (let i = 0; i < useAmount; i++) {
+    randoms.push(arr[Math.floor(Math.random() * arr.length)]);
+  }
+  return !amount ? randoms[0] : randoms;
+};
+
+const randomizeArr = arr => !isArr.isArr(arr) && arr || arr.sort(() => 0.5 - Math.random());
+
+const uniqArr = arr => !isArr.isArr(arr) && arr || arr.filter((e, i, arr) => arr.indexOf(e) == i);
+
 exports.isArr = isArr.isArr;
 exports.cloneArr = cloneArr;
+exports.eitherArr = eitherArr;
 exports.flatMap = flatMap;
 exports.omitRange = omitRange;
 exports.randomArr = randomArr;

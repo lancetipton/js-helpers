@@ -6,6 +6,7 @@ import { promisify } from './promisify'
 
 /**
  * Creates an array of Object default properties not to convert into promises
+ * @ignore
  */
 const defObjProps = Array
   .from([

@@ -4,8 +4,8 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 var isArr = require('./isArr-39234014.js');
 var isObj = require('./isObj-6b3aa807.js');
-var isNum = require('./isNum-c7164b50.js');
 var isFunc = require('./isFunc-f93803cb.js');
+var isNum = require('./isNum-c7164b50.js');
 var isStr = require('./isStr-8a57710e.js');
 var isColl = require('./isColl-5757310a.js');
 var get = require('./get-711365f4.js');

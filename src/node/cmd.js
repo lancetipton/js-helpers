@@ -19,6 +19,7 @@ const ERROR_PREFIX = 'ERROR'
 
 /**
 * Logs a message to the console
+* @ignore
 * @function
 * @param {any} message - message to log
 * @param {Object} error - thrown during service account process

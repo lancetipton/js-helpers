@@ -1,9 +1,12 @@
+/** @module collection */
+
 import { isObj } from '../object/isObj'
 import { isColl } from './isColl'
 
 /**
  * Cleans a collection by creating a new collection
  * With the null and undefined values removed
+ * @function
  * @param {Object|Array} coll - Collection to remove empty values from
  * @param {boolean} [recursive=true] - Should recursively clean child values
  *

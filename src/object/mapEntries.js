@@ -12,9 +12,11 @@ import { isEntry } from './isEntry'
  * @param {Function} cb  - function of form: (key, value) => [nextKey, nextValue]
  *  - the return type here is an array of two elements, key and value, where `key` must be either a string or a number
  *  - if a cb does not return an entry, then the original [key, value] pair that was passed into cb will be used instead
- * @returns new object with mapping applied, or the original obj if input was invalid
  * @example mapObj({a: 2, b: 3}, (k, v) => [k, v * v]) returns: {a: 4, b: 9}
  * @example mapObj({a: 1}, (k, v) => ['b', v]) returns: {b: 1}
+ * @function
+ *
+ * @returns new object with mapping applied, or the original obj if input was invalid
  */
 export const mapEntries = (obj, cb) => {
   if (!isArr(obj) && !isObj(obj)) {

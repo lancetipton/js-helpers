@@ -3,11 +3,11 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
 var isArr = require('./isArr-39234014.js');
-var array = require('./index-d6b3ee4f.js');
 var isObj = require('./isObj-6b3aa807.js');
+var array = require('./index-c8c89945.js');
+var isFunc = require('./isFunc-f93803cb.js');
 var isNum = require('./isNum-c7164b50.js');
 var isNonNegative = require('./isNonNegative-9959647c.js');
-var isFunc = require('./isFunc-f93803cb.js');
 var isBool = require('./isBool-aa6af74e.js');
 var toBool = require('./toBool-cb75ca6a.js');
 var isStr = require('./isStr-8a57710e.js');
@@ -36,18 +36,19 @@ var url = require('./url.js');
 
 
 exports.isArr = isArr.isArr;
+exports.isObj = isObj.isObj;
 exports.cloneArr = array.cloneArr;
+exports.eitherArr = array.eitherArr;
 exports.flatMap = array.flatMap;
 exports.omitRange = array.omitRange;
 exports.randomArr = array.randomArr;
 exports.randomizeArr = array.randomizeArr;
 exports.uniqArr = array.uniqArr;
 exports.validate = array.validate;
-exports.isObj = isObj.isObj;
+exports.isFunc = isFunc.isFunc;
 exports.equalsNaN = isNum.equalsNaN;
 exports.isNum = isNum.isNum;
 exports.isNonNegative = isNonNegative.isNonNegative;
-exports.isFunc = isFunc.isFunc;
 exports.isBool = isBool.isBool;
 exports.convertToStrBool = toBool.convertToStrBool;
 exports.isStrBool = toBool.isStrBool;
