@@ -16,10 +16,10 @@ import { isStr } from './isStr'
  *
  * @returns {string} - template with placeholder values filled
  */
-export const template = (template, data, fallback='') => {
+export const template = (tempStr, data, fallback='') => {
   data = isColl(data) && data || {}
-  return isStr(template) &&
-    template.replace(/\${([^{]+[^}])}/g, (match) => {
+  return isStr(tempStr)
+    ? tempStr.replace(/\${([^{]+[^}])}/g, (match) => {
       const path = match.substr(2, match.length - 3).trim()
       const replaceWith = get(data, path, fallback)
 
@@ -27,5 +27,6 @@ export const template = (template, data, fallback='') => {
         ? replaceWith(data, path, fallback)
         : replaceWith
 
-    }) || template
+    })
+    : console.error(`template requires a string as the first argument`) || tempStr
 }

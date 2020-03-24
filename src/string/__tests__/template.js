@@ -69,4 +69,16 @@ describe('template', () => {
 
   })
 
+  it('should log error when first argument is not a string', () => {
+
+    const oldErr = console.error
+    console.error = jest.fn()
+    Str.template(false)
+
+    expect(console.error).toHaveBeenCalled()
+
+    console.error = oldErr
+
+  })
+
 })

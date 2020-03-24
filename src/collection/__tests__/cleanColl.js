@@ -62,4 +62,16 @@ describe('cleanColl', () => {
 
   })
 
+  it('should log error when first argument is not a collection', () => {
+
+    const oldErr = console.error
+    console.error = jest.fn()
+    Coll.cleanColl('test')
+
+    expect(console.error).toHaveBeenCalled()
+
+    console.error = oldErr
+
+  })
+
 })

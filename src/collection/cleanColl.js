@@ -13,15 +13,17 @@ import { isColl } from './isColl'
  * @returns {Object|Array} - Cleaned collection
  */
 export const cleanColl = (coll, recursive=true) => {
-  return isColl(coll) && Object.keys(coll)
-    .reduce((cleaned, key) => {
-      const value = coll[key]
-      if(value === null || value === undefined) return cleaned
+  return isColl(coll)
+    ? Object.keys(coll)
+      .reduce((cleaned, key) => {
+        const value = coll[key]
+        if(value === null || value === undefined) return cleaned
 
-      cleaned[key] = recursive && isColl(value)
-        ? cleanColl(value)
-        : value
+        cleaned[key] = recursive && isColl(value)
+          ? cleanColl(value)
+          : value
 
-      return cleaned
-    }, isObj(coll) && {} || []) || coll
+        return cleaned
+      }, isObj(coll) && {} || [])
+    : console.error(`cleanColl requires a collection as the first argument`) || coll
 }
