@@ -43,7 +43,7 @@ describe('deepEqual', () => {
 
   })
 
-  it('should will deeply nested mixed objects and arrays', () => {
+  it('should work with deeply nested mixed objects and arrays', () => {
 
     const test1 = { foo: [ { test: [ { baz: [ [ 'bar' ] ] } ] } ] }
     const test2 = { foo: [ { test: [ { baz: [ [ 'bar' ] ] } ] } ] }
