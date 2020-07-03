@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>collection/isColl.js - JS Utils</title>
+    <title>method/waitForIt.js - JS Utils</title>
     
     <meta name="description" content="common javascript utils" />
     
@@ -46,7 +46,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">collection/isColl.js</h1>
+    <h1 class="page-title">method/waitForIt.js</h1>
     
 
     
@@ -56,26 +56,52 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/** @module collection */
+            <pre class="prettyprint source linenums"><code>/** @module functions */
 
 /**
- * Checks if the value is a collection ( object || array ).
- * @example
- * isColl([1,2,3])
- * // Returns true
- * @example
- * isColl({ foo: 'bar' })
- * // Returns true
- * @example
- * isColl(null)
- * // Returns false
+ * Helper to call waitForIt in-between check calls
+ * @ignore
  * @function
- * @param {*} val - value to check
- * @return {boolean} T/F if the value is a collection
+ * @param {Object} waitArgs - All arguments passed to the waitForIt method
+ * @param {aArray} args - All arguments forwarded to the check and onFinish methods
+ *
+ * @returns {Promise}
  */
-export const isColl = val => (
-  typeof val === 'object' &amp;&amp; val !== null
-)
+const inBetween = (waitArgs, args) => {
+  return new Promise(async (res, rej) => {
+    setTimeout(async () => {
+      res(await waitForIt(waitArgs, args))
+    }, waitArgs.wait)
+  })
+}
+
+/**
+ * Waits for check method to return true before calling onFinish
+ * &lt;br/>Will call the passed in checkMethod x (amount) number of times before failing
+ * &lt;br/>Will wait x ( wait ) milliseconds between calls to the check method
+ * @function
+ * @param {function} args.check - checks if onFinished should be called ( returns true )
+ * @param {function} args.onFinish - called when check methods returns true
+ * @param {number} [args.amount=4] - Amount of times to call the check before failing
+ * @param {number} [args.wait=1000] - Time to wait between each check
+ * @param {Array} [...args] - Arguments to pass to the check, and onFinish methods
+ *
+ * @returns {Promise}
+ */
+export const waitForIt = ({ check, onFinish, amount=4, wait=1000, total }, ...args) => {
+  total = total || 0
+  return new Promise(async (res, rej) => {
+    total++
+
+    const finished = await check(total, ...args)
+    if(!finished &amp;&amp; total >= amount) rej(false)
+
+    finished
+      ? res(onFinish(finished, ...args))
+      : res(await inBetween({ check, onFinish, amount, wait, total }, args))
+  })
+
+}
 </code></pre>
         </article>
     </section>

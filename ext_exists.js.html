@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>collection/isColl.js - JS Utils</title>
+    <title>ext/exists.js - JS Utils</title>
     
     <meta name="description" content="common javascript utils" />
     
@@ -46,7 +46,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">collection/isColl.js</h1>
+    <h1 class="page-title">ext/exists.js</h1>
     
 
     
@@ -56,26 +56,26 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/** @module collection */
+            <pre class="prettyprint source linenums"><code>/** @module Helpers */
 
 /**
- * Checks if the value is a collection ( object || array ).
- * @example
- * isColl([1,2,3])
- * // Returns true
- * @example
- * isColl({ foo: 'bar' })
- * // Returns true
- * @example
- * isColl(null)
- * // Returns false
+ * Checks if a value exists. NOT undefined || null
  * @function
- * @param {*} val - value to check
- * @return {boolean} T/F if the value is a collection
+ * @example
+ * exists(0)
+ * // Returns true
+ * @example
+ * exists(null)
+ * // Returns false
+ * exists('')
+ * // Returns true
+ * exists(NaN)
+ * // Returns false
+ * @param {*} value - Item to check if exists
+ *
+ * @returns {boolean} - If the item exists or not
  */
-export const isColl = val => (
-  typeof val === 'object' &amp;&amp; val !== null
-)
+export const exists = value => value === value &amp;&amp; value !== undefined &amp;&amp; value !== null
 </code></pre>
         </article>
     </section>
