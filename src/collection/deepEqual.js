@@ -8,7 +8,7 @@ const hasProp = Object.prototype.hasOwnProperty
 /**
  * Recursively checks if two collections are equal
  * <br/>Faster the JSON.stringify checks
- * <br/> See https://jsperf.com/fast-deep-equal-vs-json-stringify
+ * <br/>See https://jsperf.com/fast-deep-equal-vs-json-stringify
  * @example
  * const test = { foo: [ { bar: 'baz' } ] }
  * const test2 = { foo: [ { bar: 'baz' } ] }
