@@ -88,4 +88,18 @@ describe('deepMerge', () => {
     expect('sub' in obj3).toEqual(true)
   })
 
+  it('should merge child objects as new objects', () => {
+    const subChild = { test: 'I am sub child' }
+    const obj1 = { child: { subChild: subChild } }
+    const obj2 = { child: { subChild2: subChild } }
+
+    const obj3 = Obj.deepMerge(obj1, obj2)
+
+    expect(obj3.child.subChild.test).toBe(subChild.test)
+    expect(obj3.child.subChild2.test).toBe(subChild.test)
+    expect(obj3.child.subChild).not.toBe(subChild)
+    expect(obj3.child.subChild2).not.toBe(subChild)
+
+  })
+
 })

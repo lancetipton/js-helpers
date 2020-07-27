@@ -28,12 +28,13 @@ export const deepMerge = (...sources) => {
               // Check it's a function, and if so, clone it
               [key]: isFunc(value)
                 ? cloneFunc(value)
-                // Check if the value is an object of if key is in the object
+                // Check if the value is an object and if key is in the object
                 : isColl(value) && key in joined
                   // Set to value or deepMerge the object with the current merged object
                   ? deepMerge(joined[key], value)
-                  // Otherwise just clone and set the value
-                  : deepClone(value)
+                  // Otherwise the value was already cloned from the initial deepClone call
+                  // So just set the value
+                  : value
             // Pass in merged at the joined object
             }), merged)
           // If it's not an array or object, just return the merge object
