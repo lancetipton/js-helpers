@@ -1,7 +1,6 @@
 export * from './cloneJson'
 export * from './clearObj'
 export * from './eitherObj'
-export * from './ensureExists'
 export * from './deepFreeze'
 export * from './deepMerge'
 export * from './applyToCloneOf'
