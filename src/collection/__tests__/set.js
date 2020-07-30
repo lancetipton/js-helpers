@@ -38,6 +38,18 @@ describe('set', () => {
         }
       }
     })
-    
+  })
+
+  it ('should overwrite a path if it already exists', () => {
+    const path = 'data.foo.bar'
+    const res = Coll.set({ data: { foo: { bar: 55 }}}, path, 77)
+
+    expect(res).toEqual({
+      data: {
+        foo: {
+          bar: 77
+        }
+      }
+    })
   })
 })
