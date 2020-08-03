@@ -1,7 +1,7 @@
 /** @module method */
 
 import { isStr } from '../string'
-import { isComparable } from './'
+import { isOrderable } from './'
 import { validate } from '../validation'
 
 /**
@@ -12,7 +12,7 @@ import { validate } from '../validation'
  * @return { number | null } - returns a value < 0 if x is less than y, 0 if they are equal, and a value greater than 0 if x is greater than y. Returns null if the args are not comparable.
  */
 export const compareTo = (x, y) => {
-  const [ valid ] = validate({ x, y }, { $default: isComparable }) 
+  const [ valid ] = validate({ x, y }, { $default: isOrderable }) 
   if (!valid) return null
   return isStr(x)
     ? (x.localeCompare(y))

@@ -8,4 +8,9 @@ describe('complement', () => {
     expect(isNonNegative(0)).toEqual(true)
     expect(isNonNegative(1)).toEqual(true)
   })
+
+  it ('should return null when passed non-function', () => {
+    const result = complement('hello')
+    expect(result).toBeNull()
+  })
 })

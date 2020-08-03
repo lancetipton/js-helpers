@@ -52,4 +52,21 @@ describe('set', () => {
       }
     })
   })
+
+  it ('should create a path even if the value isn\'t an object!', () => {
+    const path = 'path.to.thing'
+    const obj = { path: 'not-an-object' }
+
+    const res = Coll.set(obj, path, 99)
+
+    expect(res).toEqual({
+      path: {
+        to: {
+          thing: 99
+        }
+      }
+    })
+
+
+  })
 })

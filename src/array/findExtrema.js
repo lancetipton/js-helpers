@@ -16,7 +16,7 @@ import { validate } from '../validation'
  */
 export const findExtrema = (arr, comparator) => {
   const [ valid ] = validate({ arr, comparator }, { arr: isArr, $default: isFunc })
-  if (!valid) return
+  if (!valid) return null
 
   return arr.length
     ? arr.reduce(
