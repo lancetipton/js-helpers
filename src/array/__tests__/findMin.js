@@ -29,4 +29,9 @@ describe('findMin', () => {
     expect(min).toBe(arrOfObjects[0])
     expect(min.char).toEqual('a')
   })
+
+  it ('should work with an array of primitives', () => {
+    const min = findMin([ 1, 2, 3, 4, 5])
+    expect(min).toEqual(1)
+  })
 })

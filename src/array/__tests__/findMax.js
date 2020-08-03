@@ -29,4 +29,9 @@ describe('findMax', () => {
     expect(max).toBe(arrOfObjects[arrOfObjects.length - 1])
     expect(max.char).toEqual('z')
   })
+
+  it ('should work with an array of primitives', () => {
+    const max = findMax([ 1, 2, 3, 4, 5])
+    expect(max).toEqual(5)
+  })
 })
